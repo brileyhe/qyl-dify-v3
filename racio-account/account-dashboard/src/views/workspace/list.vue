@@ -192,9 +192,10 @@ const invitUrl = ref("")
 const newRole = ref("")
 const PageInfo = ref({
     "page": 1,
-    "limit": 20,
+    "limit": 10,
     "total": 0,
-    "keyword": ""
+    "name": "",
+    "phone": ""
 
 })
 const buttonStatus = ref(false)
@@ -265,10 +266,10 @@ function membersList() {
         console.log(code, msg, data);
 
         if (code == 0) {
-            tableData.value = data
-            // PageInfo.value.total = data.total
-            // PageInfo.value.page = data.page
-            // PageInfo.value.limit = data.limit
+            tableData.value = data.data
+            PageInfo.value.total = data.total
+            PageInfo.value.page = data.page
+            PageInfo.value.limit = data.limit
         } else {
 
             ElMessage({

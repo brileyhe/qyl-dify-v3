@@ -67,17 +67,17 @@ onMounted(() => {
     isPlatform() // 判断平台
 
 
-    // if (isLogin) {
-    //     if (platform.value == "wechat") {
-    //         const url = import.meta.env.VITE_APP_DIFY_URL ? `${import.meta.env.VITE_APP_DIFY_URL}` : `${window.globalVariable.DIFY_URL}`
-    //         location.href = `${url}?console_token=${localStorage.token}`
-    //     }
-    //     else if (roles.some((item) => item == "superAdmin")) {
-    //         router.replace({ path: "/admin" })
-    //     } else if (roles.some((item) => item == "admin") || roles.some((item) => item == "owner")) {
-    //         router.replace({ path: "/workspace" })
-    //     }
-    // }
+    if (isLogin) {
+        if (platform.value == "wechat") {
+            const url = import.meta.env.VITE_APP_DIFY_URL ? `${import.meta.env.VITE_APP_DIFY_URL}` : `${window.globalVariable.DIFY_URL}`
+            location.href = `${url}?console_token=${localStorage.token}`
+        }
+        else if (roles.some((item) => item == "superAdmin")) {
+            router.replace({ path: "/admin" })
+        } else if (roles.some((item) => item == "admin") || roles.some((item) => item == "owner")) {
+            router.replace({ path: "/workspace" })
+        }
+    }
 })
 
 
