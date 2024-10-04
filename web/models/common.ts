@@ -110,7 +110,7 @@ export type ProviderHosted = Provider & {
 }
 
 export type AccountIntegrate = {
-  provider: 'google' | 'github'
+  provider: 'google' | 'github' | 'wechat'
   created_at: number
   is_bound: boolean
   link: string

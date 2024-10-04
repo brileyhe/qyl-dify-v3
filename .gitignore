@@ -173,6 +173,8 @@ docker/volumes/myscale/log/*
 docker/volumes/unstructured/*
 docker/volumes/pgvector/data/*
 docker/volumes/pgvecto_rs/data/*
+docker/volumes/racio/*
+docker/docker-compose-configs/*
 
 docker/nginx/conf.d/default.conf
 docker/middleware.env

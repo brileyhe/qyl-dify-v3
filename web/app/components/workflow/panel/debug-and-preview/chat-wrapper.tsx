@@ -81,6 +81,7 @@ const ChatWrapper = forwardRef<ChatWrapperRefType, ChatWrapperProps>(({ showConv
       {
         query,
         files,
+        user: 'user',
         inputs: workflowStore.getState().inputs,
         conversation_id: conversationId,
         parent_message_id: last_answer?.id || getLastAnswer(chatListRef.current)?.id || null,

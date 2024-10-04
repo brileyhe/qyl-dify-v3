@@ -23,6 +23,7 @@ import type { Annotation } from '@/models/log'
 import { WorkflowRunningStatus } from '@/app/components/workflow/types'
 import useTimestamp from '@/hooks/use-timestamp'
 import { AudioPlayerManager } from '@/app/components/base/audio-btn/audio.player.manager'
+import { useAppContext } from '@/context/app-context'
 
 type GetAbortController = (abortController: AbortController) => void
 type SendCallback = {
@@ -35,6 +36,8 @@ type SendCallback = {
 export const useCheckPromptVariables = () => {
   const { t } = useTranslation()
   const { notify } = useToastContext()
+  // const { userProfile } = 1()
+  // console.log(userProfile.id, userProfile.name, 'userProfileuserProfileuserProfile')
 
   const checkPromptVariables = useCallback((promptVariablesConfig: {
     inputs: Inputs
@@ -96,6 +99,7 @@ export const useChat = (
   const checkPromptVariables = useCheckPromptVariables()
   const params = useParams()
   const pathname = usePathname()
+  const { userProfile } = useAppContext()
   useEffect(() => {
     setAutoFreeze(false)
     return () => {
@@ -247,6 +251,7 @@ export const useChat = (
     const bodyParams = {
       response_mode: 'streaming',
       conversation_id: conversationId.current,
+      user: `${userProfile?.name}@${userProfile?.id}`,
       ...data,
     }
     if (bodyParams?.files?.length) {

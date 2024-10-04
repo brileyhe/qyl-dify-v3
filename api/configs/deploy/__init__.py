@@ -27,6 +27,11 @@ class DeploymentConfig(BaseSettings):
         default="SELF_HOSTED",
     )
 
+    RACIO_ACCOUNT_ENABLED: bool = Field(
+        description="Enable for RACIO_ACCOUNT feature",
+        default=False,
+    )
+
     DEPLOY_ENV: str = Field(
         description="Deployment environment (e.g., 'PRODUCTION', 'DEVELOPMENT'), default to PRODUCTION",
         default="PRODUCTION",

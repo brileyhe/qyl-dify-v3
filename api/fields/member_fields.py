@@ -15,6 +15,7 @@ account_fields = {
     "timezone": fields.String,
     "last_login_at": TimestampField,
     "last_login_ip": fields.String,
+    "status": fields.String,
     "created_at": TimestampField,
 }
 
@@ -31,3 +32,11 @@ account_with_role_fields = {
 }
 
 account_with_role_list_fields = {"accounts": fields.List(fields.Nested(account_with_role_fields))}
+
+account_pagination_fields = {
+    "page": fields.Integer,
+    "limit": fields.Integer(attribute="per_page"),
+    "total": fields.Integer,
+    "has_more": fields.Boolean(attribute="has_next"),
+    "data": fields.List(fields.Nested(account_with_role_fields), attribute="items"),
+}

@@ -113,6 +113,7 @@ conversation_fields = {
     "from_end_user_session_id": fields.String(),
     "from_account_id": fields.String,
     "from_account_name": fields.String,
+    "email": fields.String,
     "read_at": TimestampField,
     "created_at": TimestampField,
     "annotation": fields.Nested(annotation_fields, allow_null=True),
@@ -149,6 +150,9 @@ conversation_with_summary_fields = {
     "from_end_user_session_id": fields.String,
     "from_account_id": fields.String,
     "from_account_name": fields.String,
+    # conflicts - from_account_name
+    # 'from_account_name': fields.String(attribute='account_name'),
+    "from_account_email": fields.String(attribute="account_email"),
     "name": fields.String,
     "summary": fields.String(attribute="summary_or_query"),
     "read_at": TimestampField,

@@ -6,6 +6,7 @@ from datetime import datetime, timedelta, timezone
 from hashlib import sha256
 from typing import Any, Optional
 
+from flask_sqlalchemy.pagination import Pagination
 from sqlalchemy import func
 from werkzeug.exceptions import Unauthorized
 
@@ -370,6 +371,56 @@ class TenantService:
         return updated_accounts
 
     @staticmethod
+    def get_paginate_tenant_members(tenant_id: str, args: dict) -> Pagination | None:
+        """
+        Get tenant member list with pagination
+        :param tenant_id: tenant id
+        :param args: request args
+        :return:
+        """
+        filters = [TenantAccountJoin.tenant_id == tenant_id]
+
+        if args.get("name"):
+            name = args["name"][:30]
+            filters.append(Account.name.ilike(f"%{name}%"))
+
+        if args.get("account_ids"):
+            account_ids = args["account_ids"]
+            filters.append(Account.id.in_(account_ids))
+
+        # build querystring
+        query = (
+            db.session.query(Account, TenantAccountJoin.role)
+            .select_from(Account)
+            .join(TenantAccountJoin, Account.id == TenantAccountJoin.account_id)
+            .where(*filters)
+            .order_by(Account.created_at.desc())
+        )
+
+        # query = (db.select(Account, TenantAccountJoin.role)
+        #          .join(TenantAccountJoin, Account.id == TenantAccountJoin.account_id)
+        #          .where(*filters)
+        #          .order_by(Account.created_at.desc()))
+
+        # print(query)
+
+        # build account id and role mapping
+        key_value_map = {}
+        for account, role in query:
+            # print(account.__dict__)
+            # print(role)
+            key_value_map[account.id] = role
+
+        # using paginate
+        account_models = db.paginate(query, page=args["page"], per_page=args["limit"], error_out=False)
+
+        # set role value for account object
+        for item in account_models.items:
+            item.role = key_value_map[item.id]
+
+        return account_models
+
+    @staticmethod
     def get_dataset_operator_members(tenant: Tenant) -> list[Account]:
         """Get dataset admin members"""
         query = (
@@ -551,7 +602,7 @@ class RegisterService:
 
             if open_id is not None or provider is not None:
                 AccountService.link_account_integrate(provider, open_id, account)
-            if dify_config.EDITION != "SELF_HOSTED":
+            if dify_config.EDITION != "SELF_HOSTED" and dify_config.RACIO_ACCOUNT_ENABLED != True:
                 tenant = TenantService.create_tenant(f"{account.name}'s Workspace")
 
                 TenantService.create_tenant_member(tenant, account, role="owner")
@@ -600,7 +651,7 @@ class RegisterService:
             language=account.interface_language,
             to=email,
             token=token,
-            inviter_name=inviter.name if inviter else "Dify",
+            inviter_name=inviter.name if inviter else "Racio",
             workspace_name=tenant.name,
         )
 

@@ -4,8 +4,6 @@ import { useEffect, useRef, useState } from 'react'
 import {
   RiAccountCircleFill,
   RiAccountCircleLine,
-  RiApps2AddFill,
-  RiApps2AddLine,
   RiBox3Fill,
   RiBox3Line,
   RiCloseLine,
@@ -66,7 +64,7 @@ export default function AccountSetting({
   const { t } = useTranslation()
   const { enableBilling, enableReplaceWebAppLogo } = useProviderContext()
   const { isCurrentWorkspaceDatasetOperator } = useAppContext()
-
+  const { currentWorkspace, isCurrentWorkspaceManager, langeniusVersionInfo } = useAppContext()
   const workplaceGroupItems = (() => {
     if (isCurrentWorkspaceDatasetOperator)
       return []
@@ -115,7 +113,7 @@ export default function AccountSetting({
   const media = useBreakpoints()
   const isMobile = media === MediaType.mobile
 
-  const menuItems = [
+  let menuItems = [
     {
       key: 'workspace-group',
       name: t('common.settings.workplaceGroup'),
@@ -131,12 +129,12 @@ export default function AccountSetting({
           icon: <RiAccountCircleLine className={iconClassName} />,
           activeIcon: <RiAccountCircleFill className={iconClassName} />,
         },
-        {
-          key: 'integrations',
-          name: t('common.settings.integrations'),
-          icon: <RiApps2AddLine className={iconClassName} />,
-          activeIcon: <RiApps2AddFill className={iconClassName} />,
-        },
+        // {
+        //   key: 'integrations',
+        //   name: t('common.settings.integrations'),
+        //   icon: <RiApps2AddLine className={iconClassName} />,
+        //   activeIcon: <RiApps2AddFill className={iconClassName} />,
+        // },
         {
           key: 'language',
           name: t('common.settings.language'),
@@ -160,7 +158,14 @@ export default function AccountSetting({
     }
   }, [])
 
-  const activeItem = [...menuItems[0].items, ...menuItems[1].items].find(item => item.key === activeMenu)
+  let activeItem = []
+  if (currentWorkspace.role !== 'normal') {
+    activeItem = [...menuItems[0].items, ...menuItems[1].items].find(item => item.key === activeMenu)
+  }
+  else {
+    menuItems = menuItems.slice(1, 2)
+    activeItem = [...menuItems[0].items].find(item => item.key === activeMenu)
+  }
 
   return (
     <Modal

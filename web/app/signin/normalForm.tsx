@@ -7,7 +7,7 @@ import Link from 'next/link'
 import Toast from '../components/base/toast'
 import style from './page.module.css'
 import classNames from '@/utils/classnames'
-import { IS_CE_EDITION, SUPPORT_MAIL_LOGIN, apiPrefix, emailRegex } from '@/config'
+import { IS_CE_EDITION, IS_CN_REGION, SUPPORT_MAIL_LOGIN, apiPrefix, emailRegex } from '@/config'
 import Button from '@/app/components/base/button'
 import { login, oauth } from '@/service/common'
 import { getPurifyHref } from '@/utils'
@@ -16,10 +16,11 @@ type IState = {
   formValid: boolean
   github: boolean
   google: boolean
+  wechat: boolean
 }
 
 type IAction = {
-  type: 'login' | 'login_failed' | 'github_login' | 'github_login_failed' | 'google_login' | 'google_login_failed'
+  type: 'login' | 'login_failed' | 'github_login' | 'github_login_failed' | 'google_login' | 'google_login_failed' | 'wechat_login' | 'wechat_login_failed'
 }
 
 function reducer(state: IState, action: IAction) {
@@ -69,6 +70,7 @@ const NormalForm = () => {
     formValid: false,
     github: false,
     google: false,
+    wechat: false,
   })
 
   const [showPassword, setShowPassword] = useState(false)
@@ -96,7 +98,7 @@ const NormalForm = () => {
       })
       if (res.result === 'success') {
         localStorage.setItem('console_token', res.data)
-        router.replace('/apps')
+        router.replace('/office')
       }
       else {
         Toast.notify({
@@ -109,6 +111,15 @@ const NormalForm = () => {
       setIsLoading(false)
     }
   }
+
+  const { data: wechat, error: wechat_error } = useSWR(state.wechat
+    ? ({
+      url: '/oauth/login/wechat',
+      // params: {
+      //   provider: 'wechat',
+      // },
+    })
+    : null, oauth)
 
   const { data: github, error: github_error } = useSWR(state.github
     ? ({
@@ -127,6 +138,13 @@ const NormalForm = () => {
       // },
     })
     : null, oauth)
+
+  useEffect(() => {
+    if (wechat_error !== undefined)
+      dispatch({ type: 'wechat_login_failed' })
+    if (wechat)
+      window.location.href = wechat.redirect_url
+  }, [wechat, wechat_error])
 
   useEffect(() => {
     if (github_error !== undefined)
@@ -151,10 +169,10 @@ const NormalForm = () => {
 
       <div className="w-full mx-auto mt-8">
         <div className="bg-white ">
-          {!useEmailLogin && (
+          {!useEmailLogin && IS_CN_REGION && (
             <div className="flex flex-col gap-3 mt-6">
               <div className='w-full'>
-                <a href={getPurifyHref(`${apiPrefix}/oauth/login/github`)}>
+                <a href={getPurifyHref(`${apiPrefix}/oauth/login/wechat`)}>
                   <Button
                     disabled={isLoading}
                     className='w-full hover:!bg-gray-50'
@@ -162,15 +180,20 @@ const NormalForm = () => {
                     <>
                       <span className={
                         classNames(
-                          style.githubIcon,
+                          style.wechatIcon,
                           'w-5 h-5 mr-2',
                         )
                       } />
-                      <span className="truncate text-gray-800">{t('login.withGitHub')}</span>
+                      <span className="truncate text-gray-800">{t('login.withWeChat')}</span>
                     </>
                   </Button>
                 </a>
               </div>
+            </div>
+          )}
+
+          {!IS_CE_EDITION && !IS_CN_REGION && (
+            <div className="flex flex-col gap-3 mt-6">
               <div className='w-full'>
                 <a href={getPurifyHref(`${apiPrefix}/oauth/login/google`)}>
                   <Button
@@ -193,7 +216,7 @@ const NormalForm = () => {
           )}
 
           {
-            useEmailLogin && <>
+            !useEmailLogin && <>
               {/* <div className="relative mt-6">
                 <div className="absolute inset-0 flex items-center" aria-hidden="true">
                   <div className="w-full border-t border-gray-300" />
@@ -225,9 +248,9 @@ const NormalForm = () => {
                 <div className='mb-4'>
                   <label htmlFor="password" className="my-2 flex items-center justify-between text-sm font-medium text-gray-900">
                     <span>{t('login.password')}</span>
-                    <Link href='/forgot-password' className='text-primary-600'>
+                    {/* <Link href='/forgot-password' className='text-primary-600'>
                       {t('login.forget')}
-                    </Link>
+                    </Link> */}
                   </label>
                   <div className="relative mt-1">
                     <input
@@ -268,6 +291,7 @@ const NormalForm = () => {
               </form>
             </>
           }
+
           {/*  agree to our Terms and Privacy Policy. */}
           <div className="w-hull text-center block mt-2 text-xs text-gray-600">
             {t('login.tosDesc')}
@@ -275,13 +299,13 @@ const NormalForm = () => {
             <Link
               className='text-primary-600'
               target='_blank' rel='noopener noreferrer'
-              href='https://dify.ai/terms'
+              href='https://www.racio.chat/terms'
             >{t('login.tos')}</Link>
             &nbsp;&&nbsp;
             <Link
               className='text-primary-600'
               target='_blank' rel='noopener noreferrer'
-              href='https://dify.ai/privacy'
+              href='https://www.racio.chat/privacy'
             >{t('login.pp')}</Link>
           </div>
 

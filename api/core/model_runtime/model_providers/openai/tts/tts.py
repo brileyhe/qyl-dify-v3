@@ -49,7 +49,7 @@ class OpenAIText2SpeechModel(_CommonOpenAI, TTSModel):
             self._tts_invoke_streaming(
                 model=model,
                 credentials=credentials,
-                content_text="Hello Dify!",
+                content_text="Hello Racio!",
                 voice=self._get_model_default_voice(model, credentials),
             )
         except Exception as ex:

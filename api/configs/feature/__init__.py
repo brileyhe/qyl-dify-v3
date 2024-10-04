@@ -364,8 +364,18 @@ class OAuthConfig(BaseSettings):
         default="/console/api/oauth/authorize",
     )
 
+    WECHAT_CLIENT_ID: Optional[str] = Field(
+        description="WeChat OAuth client ID",
+        default=None,
+    )
+
+    WECHAT_CLIENT_SECRET: Optional[str] = Field(
+        description="WeChat OAuth client secret",
+        default=None,
+    )
+
     GITHUB_CLIENT_ID: Optional[str] = Field(
-        description="GitHub OAuth client secret",
+        description="GitHub OAuth client ID",
         default=None,
     )
 

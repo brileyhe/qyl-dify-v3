@@ -702,6 +702,9 @@ const ConversationList: FC<IConversationList> = ({ logs, appDetail, onRefresh })
         <tbody className="text-gray-500">
           {logs.data.map((log: any) => {
             const endUser = log.from_end_user_session_id || log.from_account_name
+            const fromAccountId = log.from_account_id
+            const fromAccountName = log.from_account_name
+            const fromSource = log.from_source
             const leftValue = get(log, isChatMode ? 'name' : 'message.inputs.query') || (!isChatMode ? (get(log, 'message.query') || get(log, 'message.inputs.default_input')) : '') || ''
             const rightValue = get(log, isChatMode ? 'message_count' : 'message.answer')
             return <tr
@@ -715,7 +718,8 @@ const ConversationList: FC<IConversationList> = ({ logs, appDetail, onRefresh })
               <td style={{ maxWidth: isChatMode ? 300 : 200 }}>
                 {renderTdValue(leftValue || t('appLog.table.empty.noChat'), !leftValue, isChatMode && log.annotated)}
               </td>
-              <td>{renderTdValue(endUser || defaultValue, !endUser)}</td>
+              <td>{renderTdValue(fromSource === 'console' ? fromAccountName : (endUser || defaultValue), !endUser)}</td>
+              {/* <td>{renderTdValue(endUser || defaultValue, !endUser)}</td> */}
               <td style={{ maxWidth: isChatMode ? 100 : 200 }}>
                 {renderTdValue(rightValue === 0 ? 0 : (rightValue || t('appLog.table.empty.noOutput')), !rightValue, !isChatMode && !!log.annotation?.content, log.annotation)}
               </td>

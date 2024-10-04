@@ -10,7 +10,7 @@ from configs import dify_config
 from constants.languages import languages
 from extensions.ext_database import db
 from libs.helper import get_remote_ip
-from libs.oauth import GitHubOAuth, GoogleOAuth, OAuthUserInfo
+from libs.oauth import GitHubOAuth, GoogleOAuth, OAuthUserInfo, WeChatOAuth
 from models.account import Account, AccountStatus
 from services.account_service import AccountService, RegisterService, TenantService
 
@@ -19,6 +19,14 @@ from .. import api
 
 def get_oauth_providers():
     with current_app.app_context():
+        if not dify_config.WECHAT_CLIENT_ID or not dify_config.WECHAT_CLIENT_SECRET:
+            wechat_oauth = None
+        else:
+            wechat_oauth = WeChatOAuth(
+                client_id=dify_config.WECHAT_CLIENT_ID,
+                client_secret=dify_config.WECHAT_CLIENT_SECRET,
+                redirect_uri=dify_config.CONSOLE_API_URL + "/console/api/oauth/authorize/wechat",
+            )
         if not dify_config.GITHUB_CLIENT_ID or not dify_config.GITHUB_CLIENT_SECRET:
             github_oauth = None
         else:
@@ -36,7 +44,7 @@ def get_oauth_providers():
                 redirect_uri=dify_config.CONSOLE_API_URL + "/console/api/oauth/authorize/google",
             )
 
-        OAUTH_PROVIDERS = {"github": github_oauth, "google": google_oauth}
+        OAUTH_PROVIDERS = {"wechat": wechat_oauth, "github": github_oauth, "google": google_oauth}
         return OAUTH_PROVIDERS
 
 
@@ -101,7 +109,7 @@ def _generate_account(provider: str, user_info: OAuthUserInfo):
 
     if not account:
         # Create account
-        account_name = user_info.name or "Dify"
+        account_name = user_info.name or "Racio"
         account = RegisterService.register(
             email=user_info.email, name=account_name, password=None, open_id=user_info.id, provider=provider
         )

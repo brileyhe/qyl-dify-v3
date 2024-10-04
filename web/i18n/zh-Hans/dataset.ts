@@ -68,7 +68,7 @@ const translation = {
     placeholder: '选择一个外部知识 API',
   },
   didYouKnow: '你知道吗？',
-  intro1: '知识库可以被集成到 Dify 应用中',
+  intro1: '知识库可以被集成到 Racio 应用中',
   intro2: '作为上下文',
   intro3: ',',
   intro4: '或可以',

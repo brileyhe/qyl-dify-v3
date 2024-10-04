@@ -16,6 +16,7 @@
     "gen-icons": "node ./app/components/base/icons/script.js",
     "uglify-embed": "node ./bin/uglify-embed",
     "check-i18n": "node ./i18n/check-i18n.js",
+    "increase-memory-limit": "cross-env LIMIT=4096 increase-memory-limit",
     "auto-gen-i18n": "node ./i18n/auto-gen-i18n.js",
     "test": "jest",
     "test:watch": "jest --watch"
@@ -100,6 +101,7 @@
     "tailwind-merge": "^2.4.0",
     "use-context-selector": "^1.4.1",
     "uuid": "^9.0.1",
+    "yarn": "^1.22.22",
     "zod": "^3.23.6",
     "zundo": "^2.1.0",
     "zustand": "^4.5.2"

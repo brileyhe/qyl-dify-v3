@@ -6,12 +6,13 @@ import { useSelectedLayoutSegment } from 'next/navigation'
 import { Bars3Icon } from '@heroicons/react/20/solid'
 import HeaderBillingBtn from '../billing/header-billing-btn'
 import AccountDropdown from './account-dropdown'
-import AppNav from './app-nav'
 import DatasetNav from './dataset-nav'
 import EnvNav from './env-nav'
-import ExploreNav from './explore-nav'
+// import AppNav from './app-nav'
+import Rtraining from './racio-training-nav'
+// import ExploreNav from './explore-nav'
+import Roffice from './racio-office-nav'
 import ToolsNav from './tools-nav'
-import GithubStar from './github-star'
 import { WorkspaceProvider } from '@/context/workspace-context'
 import { useAppContext } from '@/context/app-context'
 import LogoSite from '@/app/components/base/logo/logo-site'
@@ -26,7 +27,7 @@ const navClassName = `
 `
 
 const Header = () => {
-  const { isCurrentWorkspaceEditor, isCurrentWorkspaceDatasetOperator } = useAppContext()
+  const { isCurrentWorkspaceEditor, isCurrentWorkspaceDatasetOperator, currentWorkspace } = useAppContext()
 
   const selectedSegment = useSelectedLayoutSegment()
   const media = useBreakpoints()
@@ -49,33 +50,39 @@ const Header = () => {
   return (
     <div className='flex flex-1 items-center justify-between px-4'>
       <div className='flex items-center'>
-        {isMobile && <div
+        {isMobile && currentWorkspace.role !== 'normal' && <div
           className='flex items-center justify-center h-8 w-8 cursor-pointer'
           onClick={toggle}
         >
           <Bars3Icon className="h-4 w-4 text-gray-500" />
         </div>}
         {!isMobile && <>
-          <Link href="/apps" className='flex items-center mr-4'>
+          <Link href="/office" className='flex items-center mr-4'>
             <LogoSite className='object-contain' />
           </Link>
-          <GithubStar />
+          {/* <GithubStar /> */}
         </>}
       </div>
       {isMobile && (
         <div className='flex'>
-          <Link href="/apps" className='flex items-center mr-4'>
+          <Link href="/office" className='flex items-center mr-4'>
             <LogoSite />
           </Link>
-          <GithubStar />
+          {/* <GithubStar /> */}
         </div>
       )}
       {!isMobile && (
+        // <div className='flex items-center'>
+        //   {!isCurrentWorkspaceDatasetOperator && <ExploreNav className={navClassName} />}
+        //   {!isCurrentWorkspaceDatasetOperator && <AppNav />}
+        //   {(isCurrentWorkspaceEditor || isCurrentWorkspaceDatasetOperator) && <DatasetNav />}
+        //   {!isCurrentWorkspaceDatasetOperator && <ToolsNav className={navClassName} />}
+        // </div>
         <div className='flex items-center'>
-          {!isCurrentWorkspaceDatasetOperator && <ExploreNav className={navClassName} />}
-          {!isCurrentWorkspaceDatasetOperator && <AppNav />}
+          <Roffice className={navClassName} />
+          {(currentWorkspace.role !== 'normal') && <Rtraining />}
           {(isCurrentWorkspaceEditor || isCurrentWorkspaceDatasetOperator) && <DatasetNav />}
-          {!isCurrentWorkspaceDatasetOperator && <ToolsNav className={navClassName} />}
+          {(currentWorkspace.role !== 'normal') && <ToolsNav className={navClassName} />}
         </div>
       )}
       <div className='flex items-center flex-shrink-0'>
@@ -90,11 +97,19 @@ const Header = () => {
         </WorkspaceProvider>
       </div>
       {(isMobile && isShowNavMenu) && (
-        <div className='w-full flex flex-col p-2 gap-y-1'>
-          {!isCurrentWorkspaceDatasetOperator && <ExploreNav className={navClassName} />}
-          {!isCurrentWorkspaceDatasetOperator && <AppNav />}
-          {(isCurrentWorkspaceEditor || isCurrentWorkspaceDatasetOperator) && <DatasetNav />}
-          {!isCurrentWorkspaceDatasetOperator && <ToolsNav className={navClassName} />}
+        // <div className='w-full flex flex-col p-2 gap-y-1'>
+        //   {!isCurrentWorkspaceDatasetOperator && <ExploreNav className={navClassName} />}
+        //   {!isCurrentWorkspaceDatasetOperator && <AppNav />}
+        //   {(isCurrentWorkspaceEditor || isCurrentWorkspaceDatasetOperator) && <DatasetNav />}
+        //   {!isCurrentWorkspaceDatasetOperator && <ToolsNav className={navClassName} />}
+        // </div>
+        <div className='pt-30'>
+          <div className='w-full flex flex-row place-content-center pt-1 pb-2'>
+            <Roffice className={navClassName} />
+            <Rtraining />
+            {(isCurrentWorkspaceEditor || isCurrentWorkspaceDatasetOperator) && <DatasetNav />}
+            {!isCurrentWorkspaceDatasetOperator && <ToolsNav className={navClassName} />}
+          </div>
         </div>
       )}
     </div>

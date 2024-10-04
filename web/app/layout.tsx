@@ -8,7 +8,7 @@ import './styles/globals.css'
 import './styles/markdown.scss'
 
 export const metadata = {
-  title: 'Dify',
+  title: 'Racio',
 }
 
 export const viewport: Viewport = {
@@ -44,6 +44,9 @@ const LocaleLayout = ({
         data-public-maintenance-notice={process.env.NEXT_PUBLIC_MAINTENANCE_NOTICE}
         data-public-site-about={process.env.NEXT_PUBLIC_SITE_ABOUT}
         data-public-text-generation-timeout-ms={process.env.NEXT_PUBLIC_TEXT_GENERATION_TIMEOUT_MS}
+        data-public-deploy-region={process.env.NEXT_PUBLIC_DEPLOY_REGION}
+        data-public-auth-account={process.env.NEXT_PUBLIC_AUTH_URL}
+        data-public-app-error-replace-url-404={process.env.NEXT_PUBLIC_APP_ERROR_REPLACE_URL_404}
       >
         <Topbar />
         <BrowserInitor>
