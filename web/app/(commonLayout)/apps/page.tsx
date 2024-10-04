@@ -1,4 +1,5 @@
 import Apps from './Apps'
+
 import { getLocaleOnServer, useTranslation as translate } from '@/i18n/server'
 
 const AppList = async () => {
