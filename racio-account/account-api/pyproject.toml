@@ -1,15 +1,42 @@
-[tool.poetry]
-name = "racio"
-version = "0.1.0"
-description = ""
-authors = ["Your Name <you@example.com>"]
-readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "^3.10"
-python-dotenv = "^1.0.1"
-
+[project]
+requires-python = ">=3.10,<3.13"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "racio-api"
+package-mode = false
+version = "0.1.0"
+description = ""
+authors = ["A Name <you@example.com>"]
+readme = "README.md"
+
+############################################################
+# Main dependencies
+############################################################
+
+[tool.poetry.dependencies]
+authlib = "1.3.1"
+beautifulsoup4 = "4.12.2"
+celery = "~5.3.6"
+flask = "~3.0.1"
+flask-compress = "~1.14"
+flask-cors = "~4.0.0"
+flask-login = "~0.6.3"
+flask-migrate = "~4.0.5"
+flask-restful = "~0.3.10"
+Flask-SQLAlchemy = "~3.1.1"
+gevent = "~23.9.1"
+gmpy2 = "~2.2.1"
+gunicorn = "~22.0.0"
+psycopg2-binary = "~2.9.6"
+pycryptodome = "3.19.1"
+pyjwt = "~2.8.0"
+python = "~3.10"
+python-dotenv = "1.0.0"
+redis = { version = "~5.0.3", extras = ["hiredis"] }
+resend = "~0.7.0"
+sqlalchemy = "~2.0.29"
+werkzeug = "~3.0.1"

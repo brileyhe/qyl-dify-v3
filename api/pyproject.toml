@@ -130,7 +130,7 @@ name = "dify-api"
 package-mode = false
 version = "0.9.1"
 description = ""
-authors = ["A"]
+authors = ["A Name <you@example.com>"]
 readme = "README.md"
 
 ############################################################

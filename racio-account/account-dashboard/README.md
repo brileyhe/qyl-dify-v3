@@ -8,8 +8,11 @@ BASE_API: '' # account-api 访问地址         #http://at-stg.racio.chat/api
 WEBSITE: ' ' # account-dashboard 访问地址   #http://at-stg.racio.chat/dashboard
 DIFY_URL: ' '  # dify平台访问地址            #http://dify.corp.chaolian360.com
 
+## debug
+yarn dev
 
-
+## build
+yarn build and depands on nginx
 
 
 参考
