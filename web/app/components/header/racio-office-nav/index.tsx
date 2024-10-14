@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next'
 import Link from 'next/link'
 import { useSelectedLayoutSegment } from 'next/navigation'
 import classNames from 'classnames'
-import { Explore, ExploreActive } from '../../base/icons/src/public/header-nav/explore'
+import { Explore, ExploreActive } from '@/app/components/base/icons/src/public/header-nav/explore'
+
 type ExploreNavProps = {
   className?: string
 }
