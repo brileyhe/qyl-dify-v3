@@ -7,7 +7,7 @@ from datetime import datetime, timezone, timedelta
 from typing import Optional, Any
 from flask import current_app
 from constants.languages import language_timezone_mapping
-from flask_sqlalchemy import Pagination
+from flask_sqlalchemy.pagination import Pagination
 from libs.helper import get_remote_ip
 from libs.password import hash_password
 from extensions.ext_redis import redis_client

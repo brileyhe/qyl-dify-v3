@@ -277,8 +277,8 @@ services:
       MIGRATION_ENABLED: 'true'
       # The configurations of postgres database connection.
       # It is consistent with the configuration in the 'db' service below.
-      DB_USERNAME: postgres
-      DB_PASSWORD: difyai123456
+      DB_USERNAME: ${PGUSER:-postgres}
+      DB_PASSWORD: racioai123456
       DB_HOST: racio-db
       DB_PORT: 5432
       DB_DATABASE: racio
@@ -405,9 +405,8 @@ services:
                -c 'effective_cache_size=${POSTGRES_EFFECTIVE_CACHE_SIZE:-4096MB}'
     volumes:
       - ./volumes/db/data:/var/lib/postgresql/data
-    # uncomment to expose db(postgresql) port to host
     # ports:
-    #   - "5432:5432"
+    #   - "${EXPOSE_POSTGRES_PORT:-5432}:5432"
     healthcheck:
       test: [ "CMD", "pg_isready" ]
       interval: 1s
@@ -419,18 +418,23 @@ services:
     image: postgres:15-alpine
     restart: always
     environment:
-      PGUSER: postgres
+      PGUSER: ${PGUSER:-postgres}
       # The password for the default postgres user.
-      POSTGRES_PASSWORD: difyai123456
+      POSTGRES_PASSWORD: racioai123456
       # The name of the default postgres database.
       POSTGRES_DB: racio
       # postgres data directory
-      PGDATA: /var/lib/postgresql/data/pgdata
+      PGDATA: ${PGDATA:-/var/lib/postgresql/data/pgdata}
+    command: >
+      postgres -c 'max_connections=${POSTGRES_MAX_CONNECTIONS:-100}'
+               -c 'shared_buffers=${POSTGRES_SHARED_BUFFERS:-128MB}'
+               -c 'work_mem=${POSTGRES_WORK_MEM:-4MB}'
+               -c 'maintenance_work_mem=${POSTGRES_MAINTENANCE_WORK_MEM:-64MB}'
+               -c 'effective_cache_size=${POSTGRES_EFFECTIVE_CACHE_SIZE:-4096MB}'
     volumes:
       - ./volumes/racio/db/data:/var/lib/postgresql/data
-    # uncomment to expose db(postgresql) port to host
     # ports:
-    #  - "5433:5432"
+    #  - "5433:5432"      # uncomment to expose db(postgresql) port to host
     healthcheck:
       test: [ "CMD", "pg_isready" ]
       interval: 1s
