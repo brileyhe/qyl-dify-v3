@@ -47,7 +47,20 @@
    flask run --host 0.0.0.0 --port=5002 --debug
    ```
 
-7. Set up your application by visiting <http://localhost:5001/console/api/setup> or other apis...
+7. Set up your application by visiting dify apis...
+
+   ```bash
+   http://localhost:5001/console/api/setup
+   {
+      "step": "not_started"
+   }
+
+   http://localhost:5001/console/api/init
+   {
+      "status": "finished"
+   }
+
+   ```
 
 ## Testing
 
