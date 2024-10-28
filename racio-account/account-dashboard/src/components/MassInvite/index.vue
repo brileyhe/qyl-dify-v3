@@ -1,5 +1,5 @@
 <template>
-    <el-button type="primary" :icon="CirclePlus" @click="openMassInvite">
+    <el-button type="primary" :icon="CirclePlus" @click="openMassInvite" class="btn  btn-primary leading-5">
         {{ roles.includes("superAdmin") ? "批量邀请开通工作空间" : "批量邀请成员" }}
     </el-button>
 
@@ -45,8 +45,8 @@
         </el-row>
         <template #footer>
             <div class="dialog-footer">
-                <el-button @click="centerMassDialogVisible">取消</el-button>
-                <el-button type="primary" @click="sendMassInvite" :disabled="buttonMassStatus">
+                <el-button @click="centerMassDialogVisible" class="btn">取消</el-button>
+                <el-button type="primary" @click="sendMassInvite" :disabled="buttonMassStatus" class="btn  btn-primary">
                     发出邀请
                 </el-button>
             </div>

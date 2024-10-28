@@ -4,14 +4,14 @@
         <el-row class="row-bg" :gutter="11">
             <el-col>
                 <div style="padding-top: 4px;">
-                    <el-button type="primary" :icon="Plus" @click="openInvite">
+                    <el-button type="primary" :icon="Plus" @click="openInvite" class="btn  btn-primary">
                         邀请开通工作空间
                     </el-button>
                     <MassInvite @callFun="getMemberInvites" />
                 </div>
             </el-col>
-            <el-col :span="24">
-                <el-table :data="tableData" style="width: 100%">
+            <el-col :span="24" class="mt-5">
+                <el-table :data="tableData" style="width: 100%" class="card">
                     <!-- <el-table-column prop="invited_by" label="邀请人" min-width="240" /> -->
 
                     <el-table-column prop="invite_link" label="邀请链接" min-width="120">
@@ -50,6 +50,8 @@
                     </el-table-column> -->
                 </el-table>
             </el-col>
+        </el-row>
+        <el-row justify="end">
             <el-col>
                 <div style="padding: 15px ; background-color: #fff;">
                     <el-pagination v-model:current-page="PageInfo.page" v-model:page-size="PageInfo.limit" background
@@ -98,8 +100,8 @@
         </el-row>
         <template #footer>
             <div class="dialog-footer">
-                <el-button @click="centerDialogVisible">取消</el-button>
-                <el-button type="primary" @click="sendInvite" :disabled="buttonStatus">
+                <el-button @click="centerDialogVisible" class="btn">取消</el-button>
+                <el-button type="primary" @click="sendInvite" :disabled="buttonStatus" class="btn   btn-primary">
                     发出邀请
                 </el-button>
             </div>

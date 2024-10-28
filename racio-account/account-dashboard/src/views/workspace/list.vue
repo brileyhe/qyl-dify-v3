@@ -128,8 +128,8 @@
         </el-row>
         <template #footer>
             <div class="dialog-footer">
-                <el-button @click="centerDialogVisible">取消</el-button>
-                <el-button type="primary" @click="sendInvite" :disabled="buttonStatus">
+                <el-button @click="centerDialogVisible" class="btn">取消</el-button>
+                <el-button type="primary" @click="sendInvite" :disabled="buttonStatus" class="btn btn-primary">
                     发出邀请
                 </el-button>
             </div>

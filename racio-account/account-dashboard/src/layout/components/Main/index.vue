@@ -1,19 +1,9 @@
 <template>
     <div class="app-main">
         <router-view v-slot="{ Component, route }">
-            <transition
-                name="fade-slide"
-                mode="out-in"
-                appear
-            >
-                <keep-alive
-                    v-if="isReload"
-                    :include="cacheRoutes"
-                >
-                    <component
-                        :is="useWrapComponents(Component, route)"
-                        :key="route.path"
-                    />
+            <transition name="fade-slide" mode="out-in" appear>
+                <keep-alive v-if="isReload" :include="cacheRoutes">
+                    <component :is="useWrapComponents(Component, route)" :key="route.path" />
                 </keep-alive>
             </transition>
         </router-view>
@@ -38,10 +28,12 @@ const isReload = computed(() => SettingStore.isReload)
     overflow-x: hidden;
     width: 100%;
     box-sizing: border-box;
+
     .app-main-inner {
         flex: 1;
         display: flex;
         overflow-x: hidden;
+        background-color: #fff;
         width: 100%;
         box-sizing: border-box;
     }

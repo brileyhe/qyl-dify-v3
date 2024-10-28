@@ -21,6 +21,8 @@ import "@/styles/element-dark.scss"
 // 引入阿里图标库
 import "@/assets/iconfont/iconfont.css"
 import "@/assets/iconfont/iconfont.js"
+import "./assets/tailwind.css"
+import "flyonui/flyonui";
 
 const app = createApp(App)
 registerElIcons(app)

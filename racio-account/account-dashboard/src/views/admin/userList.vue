@@ -15,24 +15,25 @@
             </el-col> -->
             <el-col :span="10">
                 <div style="padding-top: 4px;">
-                    <el-button type="primary" :icon="Plus" @click="openInvite">
+                    <el-button type="primary" :icon="Plus" @click="openInvite" class="btn   btn-primary">
                         邀请开通工作空间
                     </el-button>
                     <MassInvite @callFun="authList" />
                 </div>
             </el-col>
         </el-row>
-        <el-row class="row-bg" :gutter="11">
+        <el-row class="row-bg mt-5" :gutter="11">
 
             <el-col :span="24">
-                <el-table :data="tableData" style="width: 100%">
+                <el-table :data="tableData" style="width: 100%" class="card">
 
                     <el-table-column prop="name" label="用户名" min-width="100" />
                     <el-table-column prop="nickname" label="昵称" min-width="100" />
                     <el-table-column prop="headimgurl" label="头像" width="80">
                         <template #default="scope">
                             <div>
-                                <el-image :src="scope.row.headimgurl" style="width: 80%; height: 80%">
+                                <el-image :src="scope.row.headimgurl" style="width: 80%; height: 80%"
+                                    class="size-6 rounded-full">
                                     <div slot="error" class="image-slot">
                                         <span>无头像</span>
                                     </div>
@@ -141,8 +142,8 @@
         </el-row>
         <template #footer>
             <div class="dialog-footer">
-                <el-button @click="centerDialogVisible">取消</el-button>
-                <el-button type="primary" @click="sendInvite" :disabled="buttonStatus">
+                <el-button @click="centerDialogVisible" class="btn">取消</el-button>
+                <el-button type="primary" @click="sendInvite" :disabled="buttonStatus" class="btn   btn-primary">
                     发出邀请
                 </el-button>
             </div>

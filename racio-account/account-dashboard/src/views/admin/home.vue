@@ -3,8 +3,8 @@
     <div class="home-container">
         <el-row class="row-bg" :gutter="11">
 
-            <el-col :span="24">
-                <el-table :data="tableData" style="width: 100%">
+            <el-col :span="24" class="mt-5">
+                <el-table :data="tableData" style="width: 100%" class="card">
                     <el-table-column type="index" prop="date" label="编号" width="60" />
                     <el-table-column prop="tenant_names" label="空间名" min-width="80" />
                     <el-table-column prop="name" label="创建者" width="180" />
@@ -70,8 +70,8 @@
         </el-row>
         <template #footer>
             <div class="dialog-footer">
-                <el-button @click="centerDialogVisible">取消</el-button>
-                <el-button type="primary" @click="sendInvite" :disabled="buttonStatus">
+                <el-button @click="centerDialogVisible" class="btn">取消</el-button>
+                <el-button type="primary" @click="sendInvite" :disabled="buttonStatus" class="btn  btn-primary">
                     发出邀请
                 </el-button>
             </div>

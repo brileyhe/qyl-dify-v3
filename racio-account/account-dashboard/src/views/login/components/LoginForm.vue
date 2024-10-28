@@ -32,7 +32,7 @@
         </el-form-item>
 
         <el-form-item style="width: 100%">
-            <el-button :loading="loading" class="login-btn" type="primary"
+            <el-button :loading="loading" class="login-btn btn btn-primary" type="primary"
                 @click="submitForm(ruleFormRef)">登录</el-button>
         </el-form-item>
     </el-form>
