@@ -1,0 +1,22 @@
+serverAddr = "x.x.x.x"
+serverPort = 
+
+auth.method = "token"
+auth.token = "token123456"
+
+webServer.addr = "0.0.0.0"
+webServer.port = 
+webServer.user = "YOUR_ADMIN"
+webServer.password = "YOUR_ADMIN_PASSWORD"
+webServer.pprofEnable = false
+
+# tls
+#transport.tls.certFile = "/etc/frp/ssl/client.crt"
+#transport.tls.keyFile = "/etc/frp/ssl/client.key"
+#transport.tls.trustedCaFile = "/etc/frp/ssl/ca.crt"
+
+[[proxies]]
+name = "web_http"
+type = "http"
+localIP = "120.0.0.1"
+localPort = 80

@@ -68,4 +68,7 @@
 
 ## Build Docker Images
 
-1.
+```bash
+docker buildx build -t racio-account-api-amd64:latest --platform=linux/amd64/v3 -o type=docker .
+```
+

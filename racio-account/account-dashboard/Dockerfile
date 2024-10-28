@@ -1,5 +1,5 @@
 # base image
-FROM node:20.11-alpine3.19  AS base
+FROM node:20.18-alpine3.19  AS base
 
 WORKDIR /app/web/
 COPY . .
