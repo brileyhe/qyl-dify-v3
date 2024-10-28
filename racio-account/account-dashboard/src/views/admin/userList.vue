@@ -338,6 +338,7 @@ function sendInvite() {
     inviteUser({
         email: invitText.value,
         domain: "racio.chat",
+        quota: 1,
         role: workspaceRole.value,
         tenant_id: localStorage.getItem("tenant_id") || "",
         remark: remarkText.value
