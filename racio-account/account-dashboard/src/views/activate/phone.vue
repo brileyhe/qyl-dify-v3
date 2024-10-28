@@ -49,7 +49,7 @@
                         <div>
                             <el-button size="large" :width="100" type="primary" @click="activateAccount">{{
                                 invitTokenInfo.role == "owner" ? "关联并创建空间" : "关联工作空间"
-                                }}</el-button>
+                            }}</el-button>
                         </div>
                     </el-col>
                 </el-row>
@@ -69,7 +69,7 @@
 import { ref, onMounted } from "vue"
 import Footer from "@/components/Footer/index.vue"
 import { ElMessage, ElMessageBox } from "element-plus"
-import { getWxInfo, sendSms, activate, checkOpenId, checkInvitToken, hasOwnerTenant } from "@/api/api"
+import { getWxInfo, sendSms, activate, checkOpenId, checkInvitToken, hasOwnerTenant, getJwtToken, tenantSwitch } from "@/api/api"
 import { getQueryObject } from "@/utils/index"
 import { useRouter } from "vue-router"
 import { useUserStore } from "@/store/modules/user"
@@ -84,7 +84,11 @@ const accessToken = ref("")
 const showWorkspace = ref(false)
 const showVerify = ref(false)
 const UserStore = useUserStore()
+const dify_url = ref("")
+const currentRole = ref("normal")
+const urlQuery = getQueryObject(null)
 const { token, code } = getQueryObject(null)
+
 const invitTokenInfo = ref({
     is_valid: "",
     workspace_name: "",
@@ -135,7 +139,15 @@ function WxInfo() {
 
 
 }
+function goTo(uri) {
+    console.log(uri, "localStorage.DIFY_TOKEN");
 
+    if (uri.indexOf("http") != -1) {
+        window.open(uri, '_blank')
+    } else {
+        router.replace(uri)
+    }
+}
 function hasTenant() {
     hasOwnerTenant({
         token: token,
@@ -208,6 +220,51 @@ function check(access_token) {
             if (code == 0) {
                 if (data) {
                     showVerify.value = false
+                    getJwtToken({ "access_token": access_token })
+                        .then(res => {
+                            let { code, data, msg } = res.data
+                            if (code == 0) {
+
+                                if (data.tenant_id == "" && data.current_role != "super_admin") {
+                                    ElMessageBox.alert('该Racio尚未找到您的关联帐号，请联系管理员（微信：dukexls）申请试用', '提示', {
+                                        confirmButtonText: '知道了',
+                                    })
+                                    return
+                                }
+                                let userInfo = {
+                                    token: data.token,
+                                    access_token: access_token,
+                                    roles: [data.current_role],
+                                    workspace_name: data.tenant_name,
+                                    workspace_id: data.tenant_id,
+                                    username: data.name
+                                }
+                                swtichTenant(data.tenant_id)
+                                currentRole.value = data.current_role
+                                UserStore.login(userInfo)
+
+
+                                dify_url.value = import.meta.env.VITE_APP_DIFY_URL ? `${import.meta.env.VITE_APP_DIFY_URL}?console_token=${data.token}` : `${window.globalVariable.DIFY_URL}?console_token=${data.token}`
+                                localStorage.setItem("DIFY_TOKEN", data.token)
+
+                                if (urlQuery.state == "index") {
+
+                                    location.href = dify_url.value
+                                } else if (urlQuery.state == "auth") {
+                                    router.replace("/workspace")
+                                } else {
+                                    ElMessageBox.alert('您已加入该空间，点击【好的】直接进入体验', '提示', {
+                                        // if you want to disable its autofocus
+                                        // autofocus: false,
+                                        confirmButtonText: '好的',
+                                        callback: (action) => {
+                                            goTo(dify_url.value)
+                                        },
+                                    })
+                                }
+
+                            }
+                        })
                 } else {
                     showVerify.value = true
                 }
@@ -271,7 +328,19 @@ function activateAccount() {
                         }
                     })
                 }, 3000);
+            } else if (code != 0 && msg == '不能重复加入同一个空间') {
+                ElMessageBox.alert('您已加入该空间，点击【好的】直接进入体验', '提示', {
+                    confirmButtonText: '好的',
+                    callback: (action) => {
+                        ElMessage({
+                            type: 'info',
+                            message: `action: ${action}`,
+                        })
+                    },
+                })
+
             } else {
+
                 ElMessage({
                     message: msg,
                     type: 'error',
@@ -329,6 +398,16 @@ let checkCodeBtn = ref({
     timer: null
 })
 
+function swtichTenant(tenant_id) {
+    let data = {
+        tenant_id: tenant_id
+    }
+    tenantSwitch(data)
+        .then(res => {
+            let { code, data, msg } = res.data
+
+        })
+}
 
 const getCheckCode = () => {
     if (!phoneStatus.value) {

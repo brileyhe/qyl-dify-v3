@@ -110,7 +110,6 @@ function isPlatform() {
 
     checkToekn()
 }
-
 function GotoGZH() {
     const uri = import.meta.env.VITE_APP_WEBSITE ? import.meta.env.VITE_APP_WEBSITE : window.globalVariable.WEBSITE
     const appid = import.meta.env.VITE_APP_GZHAPPID ? import.meta.env.VITE_APP_GZHAPPID : window.globalVariable.GZHAPPID

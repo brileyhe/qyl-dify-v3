@@ -14,7 +14,7 @@
                 </el-button>
             </el-col>
             <el-col :span="12" style="display:flex;align-items: center;justify-items: center;justify-content: center;">
-                <el-button type="primary" @click="goTo(dify_url)">
+                <el-button type="primary" @click="goTo(dify_url.value)">
                     进入Ai应用
                 </el-button>
             </el-col>
