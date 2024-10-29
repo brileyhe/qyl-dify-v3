@@ -4,7 +4,7 @@ FROM python:3.10-slim-bookworm AS base
 LABEL maintainer="503528179@qq.com"
 
 # install packages
-FROM base as packages
+FROM base AS packages
 
 # 中科大 USTC
 RUN sed -i 's@deb.debian.org@mirrors.ustc.edu.cn@g' /etc/apt/sources.list.d/debian.sources
@@ -37,7 +37,7 @@ RUN sed -i 's@deb.debian.org@mirrors.ustc.edu.cn@g' /etc/apt/sources.list.d/debi
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends curl wget vim nodejs ffmpeg libgmp-dev libmpfr-dev libmpc-dev \
-    && apt-get autoremove \
+    && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=packages /pkg /usr/local
