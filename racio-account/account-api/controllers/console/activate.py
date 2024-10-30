@@ -185,6 +185,7 @@ class TenantCreateCheckApi(Resource):
             return response_json(-1, '无授权信息，请重新登录授权')
         nickname = ""
         nickname = access_data['nickname']
+        account_id = ""
 
         # logging.info(access_data)
         is_tenant_owner = False
