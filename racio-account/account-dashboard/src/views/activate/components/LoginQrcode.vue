@@ -7,8 +7,8 @@
         </wxlogin>
         <div class="qrcode-text">请使用微信扫描二维码授权</div>
         <div class="agreement-tips">
-            授权即同意“<a href="https://www.racio.chat/privacy" target="_blank">隐私政策</a>”和“<a
-                href=" https://www.racio.chat/terms" target="_blank">服务协议</a>”
+            授权即同意“<a href="https://www.racio.chat/?p=38" target="_blank">隐私政策</a>”和“<a
+                href=" https://www.racio.chat/?page_id=33" target="_blank">服务协议</a>”
         </div>
     </div>
 

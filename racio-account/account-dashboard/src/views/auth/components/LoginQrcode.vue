@@ -7,8 +7,8 @@
             :href="'data:text/css;base64,LmltcG93ZXJCb3ggLnRpdGxlIHsKIGRpc3BsYXk6IG5vbmU7Cn0KLmltcG93ZXJCb3ggLnN0YXR1cy5zdGF0dXNfYnJvd3NlciB7CiBkaXNwbGF5OiBub25lOwp9Ci5pbXBvd2VyQm94IC5xcmNvZGUgewogYm9yZGVyOiBub25lOwogd2lkdGg6IDIwMHB4OwogaGVpZ2h0OiAyMDBweDsKfQouaW1wb3dlckJveCAuc3RhdHVzewogZGlzcGxheTogbm9uZQp9'">
         </wxlogin>
         <div class="qrcode-text">请使用微信扫描二维码登录</div>
-        <div class="agreement-tips">扫码即同意<a href="https://www.racio.chat/privacy" target="_blank">隐私政策</a>”和“<a
-                href="https://www.racio.chat/terms" target="_blank">服务条款</a>”</div>
+        <div class="agreement-tips">扫码即同意<a href="https://www.racio.chat/?p=38" target="_blank">隐私政策</a>”和“<a
+                href="https://www.racio.chat/?page_id=33" target="_blank">服务条款</a>”</div>
     </div>
 </template>
 

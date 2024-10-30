@@ -13,8 +13,9 @@
                 <LoginQrcode :token="tokens" :source="source" v-if="platform == 'pc'" />
                 <div style="text-align: center;" v-else>
                     <el-button class="gzh-button" type="success" @click="GotoGZH">立即进入</el-button>
-                    <div class="agreement-tips">授权即同意<a href="https://www.racio.chat/privacy"
-                            target="_blank">隐私政策</a>”和“<a href="https://www.racio.chat/terms" target="_blank">服务条款</a>”
+                    <div class="agreement-tips">授权即同意<a href="https://www.racio.chat/?p=38"
+                            target="_blank">隐私政策</a>”和“<a href="https://www.racio.chat/?page_id=33"
+                            target="_blank">服务条款</a>”
                     </div>
                 </div>
 
