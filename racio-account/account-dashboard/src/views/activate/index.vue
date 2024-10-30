@@ -37,8 +37,8 @@
                         @click="GotoGZH">立即进驻</el-button>
                     <el-button v-else class="gzh-button" type="success" @click="GotoGZH">微信授权登录</el-button>
                     <div class="agreement-tips">
-                        授权即同意“<a href="https://www.racio.chat/privacy" target="_blank">隐私政策</a>”和“<a
-                            href=" https://www.racio.chat/terms" target="_blank">服务协议</a>”
+                        授权即同意“<a href="https://www.racio.chat/?p=38" target="_blank">隐私政策</a>”和“<a
+                            href=" https://www.racio.chat/?page_id=33" target="_blank">服务协议</a>”
                     </div>
                 </div>
             </div>
