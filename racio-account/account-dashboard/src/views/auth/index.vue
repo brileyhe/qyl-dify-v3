@@ -41,7 +41,7 @@ const router = useRouter()
 const platform = ref("")
 const source = ref("index")
 
-const { tokens } = ref(getQueryObject(null))
+const { tokens, action } = getQueryObject(null)
 
 
 
@@ -55,6 +55,20 @@ function isPlatform() {
         platform.value = "pc"
     }
 }
+function checkAuth() {
+    console.log(action, "action");
+    if (action == "authTimeout") {
+        localStorage.clear()
+    } else {
+
+        // if (isLogin) {
+        //     let us = localStorage.userState ? JSON.parse(localStorage.userState) : {}
+        //     const uri = import.meta.env.VITE_APP_DIFY_URL ? import.meta.env.VITE_APP_DIFY_URL : window.globalVariable.DIFY_URL
+        //     window.location.href = `${uri}?console_token=${us.token}`
+        // }
+    }
+
+}
 
 
 function GotoGZH() {
@@ -66,12 +80,9 @@ function GotoGZH() {
 }
 onMounted(() => {
     isPlatform() // 判断平台
-    let us = localStorage.userState ? JSON.parse(localStorage.userState) : {}
 
-    if (isLogin) {
-        const uri = import.meta.env.VITE_APP_DIFY_URL ? import.meta.env.VITE_APP_DIFY_URL : window.globalVariable.DIFY_URL
-        window.location.href = `${uri}?console_token=${us.token}`
-    }
+    checkAuth()
+
 
 
 

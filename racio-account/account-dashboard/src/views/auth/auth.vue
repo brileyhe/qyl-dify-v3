@@ -41,7 +41,7 @@ const router = useRouter()
 const platform = ref("")
 const source = ref("auth")
 
-const { tokens } = ref(getQueryObject(null))
+const { tokens } = getQueryObject(null)
 
 
 
