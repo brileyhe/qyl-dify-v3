@@ -4,7 +4,7 @@ import random
 from flask import request
 from flask_restful import Resource, reqparse
 from libs.helper import uuid_value
-from libs.response import response_json
+from libs.response import response_json, response_json_v2
 from models.racio.account import AccountStatus
 from services.racio.account_service import AccountService
 from services.dify.api_service import ApiService
@@ -14,6 +14,31 @@ from . import api
 
 
 class ActivateCheckApi(Resource):
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('token', type=uuid_value, required=True, nullable=False, location='json')
+        args = parser.parse_args()
+
+        # get invitation_data and tenant by token (MemberInvite id)
+        invitation = AccountService.get_invitation_if_token_valid(args['token'])
+
+        tenant_name = ""
+        role = ""
+
+        if invitation:
+            if invitation['tenant']:
+                tenant = invitation['tenant']
+                tenant_name = tenant['name']
+
+            member_invite = invitation['data']
+            role = member_invite.role
+
+        data = {
+            'is_valid': invitation is not None,
+            'workspace_name': tenant_name if invitation else "",
+            'role': role
+        }
+        return response_json_v2(data, message='Checked invitation successfully')
 
     def post(self):
         parser = reqparse.RequestParser()
@@ -35,7 +60,7 @@ class ActivateCheckApi(Resource):
             role = member_invite.role
 
         data = {'is_valid': invitation is not None, 'workspace_name': tenant_name if invitation else "", 'role': role}
-        return response_json(0, 'success', data)
+        return response_json(0, 'Success [Deprecated]', data)
 
 
 class ActivateApi(Resource):
@@ -158,6 +183,67 @@ class ActivateApi(Resource):
 
 
 class TenantCreateCheckApi(Resource):
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('token', type=uuid_value, required=True, nullable=False, location='json')
+        parser.add_argument('access_token', type=str, required=True, nullable=False, location='json', default='')
+        args = parser.parse_args()
+
+        # get invitation_data by token (MemberInvite id)
+        invitation = AccountService.get_invitation_if_token_valid(args['token'])
+        if not invitation:
+            return response_json(-1, '该邀请已被使用')
+
+        # get tenant_id and tenant_name
+        member_invite = invitation['data']
+        tenant_id = member_invite.tenant_id
+        account_role = member_invite.role
+        tenant_name = ""
+        if invitation['tenant']:
+            tenant = invitation['tenant']
+            tenant_name = tenant['name']
+
+        # get WeChat login UnionId
+        # - https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/union-id.html
+        access_data = AccountService.get_access_code(args['access_token'])
+        if not access_data:
+            return response_json(-1, '无授权信息，请重新登录授权')
+        nickname = ""
+        nickname = access_data['nickname']
+        account_id = ""
+
+        # logging.info(access_data)
+        is_tenant_owner = False
+        is_joined_tenant = False
+        account_integrate = AccountService.get_account_integrate_by_unionid(access_data['provider'],
+                                                                            access_data['unionid'])
+
+        # 判断被邀请用户是否存在
+        if account_integrate:
+            account_id = account_integrate.account_id
+            if account_role == AccountRole.OWNER:
+                # 判断是否已创建owner空间
+                is_exists = Dify_AccountService.check_owner_exists(account_id, AccountRole.OWNER)
+                if is_exists:
+                    is_tenant_owner = True
+                    is_joined_tenant = True
+            else:
+                # 判断该用户是否加入了同一个空间
+                is_exists = Dify_AccountService.check_account_join_exists(tenant_id, account_id)
+                if is_exists:
+                    is_joined_tenant = True
+
+        data = {
+            "nickname": nickname,
+            "account_id": account_id,
+            "account_role": account_role,
+            "tenant_id": tenant_id,
+            "tenant_name": tenant_name,
+            "is_tenant_owner": is_tenant_owner,  # renamed has_owner_tenant to is_tenant_owner
+            "is_joined_tenant": is_joined_tenant
+        }
+
+        return response_json_v2(data, message='Checked invitation successfully')
 
     def post(self):
         parser = reqparse.RequestParser()
@@ -217,7 +303,7 @@ class TenantCreateCheckApi(Resource):
             "is_joined_tenant": is_joined_tenant
         }
 
-        return response_json(0, 'success', data)
+        return response_json(0, 'Success [Deprecated]', data)
 
 
 api.add_resource(ActivateCheckApi, '/activate/check')
