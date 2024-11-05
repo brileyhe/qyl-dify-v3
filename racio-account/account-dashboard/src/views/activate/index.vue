@@ -3,12 +3,17 @@
         <div class="login-box">
             <div class="login-text view_wechat">
                 <h2 class="title">
-                    <div>
+                    <div v-if="isValid">
                         <span>&#127881; 邀请您</span>
                         <div>作为【{{ role == "owner" ? "全新" : workspace_name }}】的</div>
                         <div>AI数字员工</div>
                         <div>办公空间的{{ role == "owner" ?
                             "所有者" : role == "admin" ? "管理员" : "尊享会员" }}</div>
+                    </div>
+                    <div v-else>
+                        <div class="login-text view-wechat">
+                            &#127881; 欢迎来到 <br /> Racio数字员工空间
+                        </div>
                     </div>
 
 
@@ -18,14 +23,18 @@
                 <div class="view_pc">
                     <div class="login-text ">
                         <h2 class="title">
-                            <div>
+                            <div v-if="isValid">
                                 <span>&#127881; 邀请您</span>
                                 <div>作为【{{ role == "owner" ? "全新" : workspace_name }}】的</div>
                                 <div>AI数字员工</div>
                                 <div>办公空间的{{ role == "owner" ?
                                     "所有者" : role == "admin" ? "管理员" : "尊享会员" }}</div>
                             </div>
-
+                            <div v-else>
+                                <div class="login-text view-wechat">
+                                    &#127881; 欢迎来到 <br /> Racio数字员工空间
+                                </div>
+                            </div>
 
                         </h2>
                     </div>
@@ -56,11 +65,12 @@ import SwitchDark from "@/components/SwitchDark/index.vue"
 import LoginQrcode from "./components/LoginQrcode.vue"
 import Footer from "@/components/Footer/index.vue"
 import { getQueryObject } from "@/utils/index"
-import { getWxInfo, checkInvitToken } from "@/api/api"
+import { checkInvitToken } from "@/api/api"
 import { ElMessage, ElMessageBox } from "element-plus"
 import { useRouter } from "vue-router"
 const platform = ref("")
 const showQrcode = ref(false)
+const isValid = ref(false)
 const role = ref("")
 const workspace_name = ref("")
 const { token, code } = getQueryObject(null)
@@ -73,18 +83,19 @@ function checkToekn() {
             if (code == 0) {
 
                 if (data.is_valid) {
+                    isValid.value = true
                     role.value = data.role
                     workspace_name.value = data.workspace_name
                     showQrcode.value = true
 
                 } else {
-                    ElMessageBox.alert(`此邀请链接已经失效，请联系${workspace_name.value == "" ? "管理员（微信：dukexls）" : workspace_name.value + '的[管理员]'}获得新的邀请链接`, '提示', {
-                        confirmButtonText: '知道了',
-                        dangerouslyUseHTMLString: true,
-                        callback: () => {
-                            router.back()
-                        },
-                    })
+                    // ElMessageBox.alert(`此邀请链接已经失效，请联系${workspace_name.value == "" ? "管理员（微信：dukexls）" : workspace_name.value + '的[管理员]'}获得新的邀请链接`, '提示', {
+                    //     confirmButtonText: '知道了',
+                    //     dangerouslyUseHTMLString: true,
+                    //     callback: () => {
+                    //         router.replace('/')
+                    //     },
+                    // })
                 }
 
             }

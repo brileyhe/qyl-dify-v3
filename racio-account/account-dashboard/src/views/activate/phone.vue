@@ -49,7 +49,7 @@
                         <div>
                             <el-button size="large" :width="100" type="primary" @click="activateAccount">{{
                                 invitTokenInfo.role == "owner" ? "关联并创建空间" : "关联工作空间"
-                                }}</el-button>
+                            }}</el-button>
                         </div>
                     </el-col>
                 </el-row>
@@ -80,6 +80,7 @@ const verifyPhoneNum = ref("")
 const verifyCode = ref("")
 const openId = ref("")
 const workspace = ref("")
+const workspace_name = ref("")
 const accessToken = ref("")
 const showWorkspace = ref(false)
 const showVerify = ref(false)

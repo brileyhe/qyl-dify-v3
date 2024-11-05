@@ -80,6 +80,9 @@
             </div>
         </template>
     </el-dialog>
+
+
+
 </template>
 
 <script lang="ts" setup>
@@ -97,6 +100,7 @@ const verifyPhoneNum = ref("")
 const verifyCode = ref("")
 const openId = ref("")
 const workspace = ref("")
+const workspace_name = ref("")
 const accessToken = ref("")
 const showWorkspace = ref(false)
 const showVerify = ref(false)
