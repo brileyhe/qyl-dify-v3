@@ -347,6 +347,15 @@ class AccountService:
             return member_invite
         else:
             return None
+        
+    @staticmethod
+    def get_member_invite_v2(id: str) -> MemberInvite:
+        member_invite = MemberInvite.query.filter_by(id=id).first()
+        # Do not check quota here
+        if member_invite:
+            return member_invite
+        else:
+            return None
 
     @staticmethod
     def get_member_invites(tenant_id: str = None, account_id: str = None) -> list[MemberInvite]:
@@ -406,13 +415,37 @@ class AccountService:
         if not invitation_data:
             return None
 
+        # get tenant from invitation, if has
         tenant = None
         if invitation_data.tenant_id:
             apiService = ApiService()
             tenant = apiService.get_tenant(invitation_data.tenant_id)
         return {
             'data': invitation_data,
-            'tenant': tenant,
+            'tenant': tenant
+        }
+    
+    @classmethod
+    def get_invitation_if_token_valid_v2(cls, token: str) -> Optional[dict[str, Any]]:
+        invitation_data = cls.get_member_invite_v2(token)
+        if not invitation_data:
+            return None
+
+        # check invitation valid
+        is_valid = False
+        if invitation_data.quota > 0:
+            is_valid = True
+
+        # get tenant from invitation, if has
+        tenant = None
+        if invitation_data.tenant_id:
+            apiService = ApiService()
+            tenant = apiService.get_tenant(invitation_data.tenant_id)
+
+        return {
+            'data': invitation_data,
+            'is_valid': is_valid,
+            'tenant': tenant
         }
 
     @staticmethod
