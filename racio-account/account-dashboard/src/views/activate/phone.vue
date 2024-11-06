@@ -115,7 +115,6 @@ function isWorkspace() {
 }
 
 function WxInfo() {
-
     getWxInfo({ code: code })
         .then(res => {
             let { code, msg, data } = res.data
@@ -123,7 +122,7 @@ function WxInfo() {
                 accessToken.value = data
                 localStorage.setItem("access_token", data)
                 hasTenant()
-                check(data)
+                // check(data)
             }
 
         })
@@ -150,76 +149,85 @@ function goTo(uri) {
     }
 }
 function hasTenant() {
+
     hasOwnerTenant({
         token: token,
         access_token: accessToken.value
     })
         .then((result) => {
-            let { code, msg, data } = result.data
-            if (code == 0) {
-                if (data.is_joined_tenant) {
-                    getJwtToken({ "access_token": accessToken.value })
-                        .then(res => {
-                            let { code, data, msg } = res.data
-                            if (code == 0) {
 
-                                if (data.tenant_id == "" && data.current_role != "super_admin") {
-                                    ElMessageBox.alert('该Racio尚未找到您的关联帐号，请联系管理员（微信：dukexls）申请试用', '提示', {
-                                        confirmButtonText: '知道了',
-                                    })
-                                    return
-                                }
-                                let userInfo = {
-                                    token: data.token,
-                                    access_token: accessToken.value,
-                                    roles: [data.current_role],
-                                    workspace_name: data.tenant_name,
-                                    workspace_id: data.tenant_id,
-                                    username: data.name
-                                }
-                                swtichTenant(data.tenant_id)
-                                workspace.value = data.tenant_name
-                                currentRole.value = data.current_role
-                                UserStore.login(userInfo)
+            let { data } = result.data
 
+            if (data.is_joined_tenant) {
 
-                                dify_url.value = import.meta.env.VITE_APP_DIFY_URL ? `${import.meta.env.VITE_APP_DIFY_URL}?console_token=${data.token}` : `${window.globalVariable.DIFY_URL}?console_token=${data.token}`
-                                localStorage.setItem("DIFY_TOKEN", data.token)
+                swtichTenant(data.tenant_id)
 
-                                if (urlQuery.state == "index") {
+                getJwtToken({ "access_token": accessToken.value })
+                    .then(res => {
+                        let { code, data, msg } = res.data
+                        if (code == 0) {
 
-                                    location.href = dify_url.value
-                                } else if (urlQuery.state == "auth") {
-                                    router.replace("/workspace")
-                                } else {
-                                    ElMessageBox.alert('您已加入该空间，点击【好的】直接进入体验', '提示', {
-                                        // if you want to disable its autofocus
-                                        // autofocus: false,
-                                        confirmButtonText: '好的',
-                                        callback: (action) => {
-                                            goTo(dify_url.value)
-                                        },
-                                    })
-                                }
-
+                            if (data.tenant_id == "" && data.current_role != "super_admin") {
+                                ElMessageBox.alert('该Racio尚未找到您的关联帐号，请联系管理员（微信：dukexls）申请试用', '提示', {
+                                    confirmButtonText: '知道了',
+                                })
+                                return
                             }
-                        })
-                }
-                else if (data.has_owner_tenant) {
-                    ElMessageBox.alert(`该微信帐号已经创建空间，请更换微信帐号完成绑定操作`, '提示', {
-                        confirmButtonText: '知道了',
-                        dangerouslyUseHTMLString: true,
-                        callback: () => {
-                            router.back()
-                        },
-                    })
-                } else {
+                            let userInfo = {
+                                token: data.token,
+                                access_token: accessToken.value,
+                                roles: [data.current_role],
+                                workspace_name: data.tenant_name,
+                                workspace_id: data.tenant_id,
+                                username: data.name
+                            }
 
-                    checkToekn()
-                }
-            } else {
-                checkToekn()
+                            workspace.value = data.tenant_name
+                            currentRole.value = data.current_role
+                            UserStore.login(userInfo)
+
+
+                            dify_url.value = import.meta.env.VITE_APP_DIFY_URL ? `${import.meta.env.VITE_APP_DIFY_URL}?console_token=${data.token}` : `${window.globalVariable.DIFY_URL}?console_token=${data.token}`
+                            localStorage.setItem("DIFY_TOKEN", data.token)
+
+                            if (urlQuery.state == "index") {
+
+                                location.href = dify_url.value
+                            } else if (urlQuery.state == "auth") {
+                                router.replace("/workspace")
+                            } else {
+                                ElMessageBox.alert('您已加入该空间，点击【好的】直接进入体验', '提示', {
+                                    // if you want to disable its autofocus
+                                    // autofocus: false,
+                                    confirmButtonText: '好的',
+                                    callback: (action) => {
+                                        goTo(dify_url.value)
+                                    },
+                                })
+                            }
+
+                        }
+                    })
             }
+            else if (data.has_owner_tenant) {
+                ElMessageBox.alert(`该微信帐号已经创建空间，请更换微信帐号完成绑定操作`, '提示', {
+                    confirmButtonText: '知道了',
+                    dangerouslyUseHTMLString: true,
+                    callback: () => {
+                        router.back()
+                    },
+                })
+            } else if (data.is_valid_invitation == false) {
+
+                ElMessageBox.alert(`此邀请链接已经失效，请联系${workspace_name.value == "" ? "管理员（微信：dukexls）" : workspace_name.value + '的[管理员]'}获得新的邀请链接`, '提示', {
+                    confirmButtonText: '知道了',
+                    dangerouslyUseHTMLString: true,
+                    callback: () => {
+                        router.back()
+                    },
+                })
+            }
+
         }).catch((err) => {
             ElMessageBox.alert(`${err}`, '提示', {
                 confirmButtonText: '知道了',
@@ -231,34 +239,6 @@ function hasTenant() {
         });
 }
 
-function checkToekn() {
-
-    checkInvitToken({ token: token })
-        .then(res => {
-            let { code, msg, data } = res.data
-            if (code == 0) {
-
-                if (data.is_valid) {
-
-                    invitTokenInfo.value = data
-                    workspace.value = data.workspace_name
-                    roleTypes.value = data.role
-
-                } else {
-
-                    ElMessageBox.alert(`此邀请链接已经失效，请联系${workspace_name.value == "" ? "管理员（微信：dukexls）" : workspace_name.value + '的[管理员]'}获得新的邀请链接`, '提示', {
-                        confirmButtonText: '知道了',
-                        dangerouslyUseHTMLString: true,
-                        callback: () => {
-                            router.back()
-                        },
-                    })
-                }
-
-            }
-        })
-
-}
 // 检查是否已经绑定微信
 function check(access_token) {
     checkOpenId({
@@ -435,7 +415,6 @@ const getCheckCode = () => {
 }
 
 onMounted(() => {
-
     WxInfo()
 })
 
