@@ -167,8 +167,7 @@ export function checkOpenId(data) {
 }
 export function hasOwnerTenant(data) {
     return request({
-        url: "/console/activate/create_check",
-        method: "post",
-        data,
+        url: `/console/activate/create_check?access_token=${data.access_token}&token=${data.token}`,
+        method: "get",
     })
 }

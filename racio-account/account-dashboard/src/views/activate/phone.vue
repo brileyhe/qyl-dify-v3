@@ -156,9 +156,7 @@ function hasTenant() {
     })
         .then((result) => {
             let { code, msg, data } = result.data
-
             if (code == 0) {
-
                 if (data.is_joined_tenant) {
                     getJwtToken({ "access_token": accessToken.value })
                         .then(res => {
@@ -261,6 +259,7 @@ function checkToekn() {
         })
 
 }
+// 检查是否已经绑定微信
 function check(access_token) {
     checkOpenId({
         "access_token": access_token,
