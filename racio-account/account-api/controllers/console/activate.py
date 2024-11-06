@@ -16,7 +16,7 @@ from . import api
 class ActivateCheckApi(Resource):
     def get(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('token', type=uuid_value, required=True, nullable=False, location='json')
+        parser.add_argument('token', type=uuid_value, required=True, default='', location='args')
         args = parser.parse_args()
 
         # get invitation_data and tenant by token (MemberInvite id)
@@ -191,8 +191,8 @@ class ActivateApi(Resource):
 class TenantCreateCheckApi(Resource):
     def get(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('token', type=uuid_value, required=True, nullable=False, location='json')
-        parser.add_argument('access_token', type=str, required=True, nullable=False, location='json', default='')
+        parser.add_argument('token', type=uuid_value, required=True, default='', location='args')
+        parser.add_argument('access_token', type=str, required=True, default='', location='args')
         args = parser.parse_args()
 
         # get invitation entity by token (MemberInvite id)
