@@ -49,7 +49,7 @@
                         <div>
                             <el-button size="large" :width="100" type="primary" @click="activateAccount">{{
                                 invitTokenInfo.role == "owner" ? "关联并创建空间" : "关联工作空间"
-                            }}</el-button>
+                                }}</el-button>
                         </div>
                     </el-col>
                 </el-row>
@@ -148,6 +148,7 @@ function goTo(uri) {
         router.replace(uri)
     }
 }
+
 function hasTenant() {
 
     hasOwnerTenant({
@@ -157,7 +158,7 @@ function hasTenant() {
         .then((result) => {
 
             let { data } = result.data
-
+            workspace.value = data.tenant_name
             if (data.is_joined_tenant) {
 
                 swtichTenant(data.tenant_id)
@@ -226,6 +227,8 @@ function hasTenant() {
                         router.back()
                     },
                 })
+            } else {
+                check(accessToken.value)
             }
 
         }).catch((err) => {

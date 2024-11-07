@@ -61,11 +61,11 @@ function checkAuth() {
         localStorage.clear()
     } else {
 
-        // if (isLogin) {
-        //     let us = localStorage.userState ? JSON.parse(localStorage.userState) : {}
-        //     const uri = import.meta.env.VITE_APP_DIFY_URL ? import.meta.env.VITE_APP_DIFY_URL : window.globalVariable.DIFY_URL
-        //     window.location.href = `${uri}?console_token=${us.token}`
-        // }
+        if (isLogin) {
+            let us = localStorage.userState ? JSON.parse(localStorage.userState) : {}
+            const uri = import.meta.env.VITE_APP_DIFY_URL ? import.meta.env.VITE_APP_DIFY_URL : window.globalVariable.DIFY_URL
+            window.location.href = `${uri}?console_token=${us.token}`
+        }
     }
 
 }
