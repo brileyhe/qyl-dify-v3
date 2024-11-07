@@ -176,7 +176,7 @@ function hasTenant() {
         .then((result) => {
 
             let { data } = result.data
-
+            workspace.value = data.tenant_name
             if (data.is_joined_tenant) {
 
                 swtichTenant(data.tenant_id)
@@ -238,6 +238,8 @@ function hasTenant() {
                         router.back()
                     },
                 })
+            } else {
+                check(accessToken.value)
             }
 
         }).catch((err) => {
