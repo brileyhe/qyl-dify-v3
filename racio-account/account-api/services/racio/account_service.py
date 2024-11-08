@@ -371,7 +371,29 @@ class AccountService:
             member_invites = MemberInvite.query.filter_by(tenant_id=tenant_id, invited_by=account_id).order_by(
                 MemberInvite.created_at.desc()).all()
         return member_invites
+    
+    @staticmethod
+    def get_member_invites_pagination(tenant_id: str = None, account_id: str = None, page: int = 1, limit: int = 20) -> Pagination | None:
+        """
+        Get member_invites list with pagination
+        """
 
+        query = db.select(MemberInvite).where(MemberInvite.tenant_id == tenant_id)
+
+        if account_id != None:
+            query = query.where(MemberInvite.invited_by == account_id)
+            
+        query = query.order_by(MemberInvite.created_at.desc())
+
+        member_invites = db.paginate(
+            query,
+            page=page,
+            per_page=limit,
+            error_out=False
+        )
+
+        return member_invites
+    
     @staticmethod
     def delete_member_invite(id: str) -> None:
         member_invite = MemberInvite.query.filter_by(id=id).first()
@@ -480,7 +502,9 @@ class AccountService:
     def get_user_data(account_id: str):
         cache_key = f'racio_user_data:{account_id}'
         data = redis_client.get(cache_key)
+
         if not data:
             return None
+        
         json_data = json.loads(data)
         return json_data
