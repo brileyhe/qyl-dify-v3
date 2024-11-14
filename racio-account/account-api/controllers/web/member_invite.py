@@ -49,18 +49,16 @@ class MemberInviteListApi(Resource):
         elif user_data['account_role'] == AccountRole.ADMIN:
             member_invites_pagination = AccountService.get_member_invites_pagination(tenant_id, current_user.id, page=page, limit=limit)
 
-
-        # console_web_url = current_app.config.get("CONSOLE_WEB_URL")
-        # apiService = ApiService()
-        # for member_invite in member_invites:
-        #     member_invite.invite_link = f'{console_web_url}/account/activate?token={member_invite.id}'
-        #     account = apiService.get_account(member_invite.invited_by)
-        #     if account:
-        #         member_invite.invited_by = account['name']
-        #     else:
-        #         member_invite.invited_by = ''
-
         if member_invites_pagination:
+            console_web_url = current_app.config.get("CONSOLE_WEB_URL")
+            apiService = ApiService()
+            for member_invite in member_invites_pagination.items:
+                member_invite.invite_link = f'{console_web_url}/account/activate?token={member_invite.id}'
+                account = apiService.get_account(member_invite.invited_by)
+                if account:
+                    member_invite.invited_by = account['name']
+                else:
+                    member_invite.invited_by = ''
             return member_invites_pagination, 200
         else:
             return {
