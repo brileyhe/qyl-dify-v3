@@ -159,6 +159,9 @@ function hasTenant() {
 
             let { data } = result.data
             workspace.value = data.tenant_name
+
+
+            invitTokenInfo.value.role = data.account_role
             if (data.is_joined_tenant) {
 
                 swtichTenant(data.tenant_id)
