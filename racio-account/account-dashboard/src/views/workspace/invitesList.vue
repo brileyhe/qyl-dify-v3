@@ -143,7 +143,7 @@ const handleCopy = (text, event) => {
 }
 
 function handleCurrentChange() {
-    AuthList()
+    getMemberInvites()
 }
 
 function openInvite() {
@@ -178,10 +178,7 @@ function AuthList() {
 }
 
 function getMemberInvites() {
-    let data = {
-        tenant_id: localStorage.getItem("tenant_id") || ""
-    }
-    memberInvites(data).then(res => {
+    memberInvites(PageInfo.value).then(res => {
         let { code, msg, data } = res.data
         if (code == 0) {
             tableData.value = data

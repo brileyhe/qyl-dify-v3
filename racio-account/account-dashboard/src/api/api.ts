@@ -58,9 +58,8 @@ export function editPassword(data) {
 //邀请列表
 export function memberInvites(data) {
     return request({
-        url: "/web/member_invites",
-        method: "post",
-        data,
+        url: `/web/member_invites?page=${data.page}&limit=${data.limit}`,
+        method: "get",
     })
 
 }
