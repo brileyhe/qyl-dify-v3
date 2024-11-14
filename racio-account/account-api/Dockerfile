@@ -31,7 +31,6 @@ ENV TZ UTC
 
 WORKDIR /app/racio
 
-
 # 中科大 USTC
 RUN sed -i 's@deb.debian.org@mirrors.ustc.edu.cn@g' /etc/apt/sources.list.d/debian.sources
 

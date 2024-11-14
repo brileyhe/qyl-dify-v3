@@ -150,8 +150,10 @@ docker/volumes/minio/*
 docker/volumes/milvus/*
 docker/volumes/racio/*
 docker/docker-compose-configs/*
-docker/docker-compose-stg.yaml
+docker/docker-compose-stg-3*.yaml
 docker/frp/frpc/data/frpc.toml
+docker/nginx/ssl/*.key
+docker/nginx/ssl/*.pem
 
 sdks/python-client/build
 sdks/python-client/dist

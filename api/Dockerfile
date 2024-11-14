@@ -4,7 +4,10 @@ FROM python:3.10-slim-bookworm AS base
 LABEL maintainer="takatost@gmail.com"
 
 # install packages
-FROM base as packages
+FROM base AS packages
+
+# 中科大 USTC
+RUN sed -i 's@deb.debian.org@mirrors.ustc.edu.cn@g' /etc/apt/sources.list.d/debian.sources
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends gcc g++ libc-dev libffi-dev libgmp-dev libmpfr-dev libmpc-dev
@@ -31,6 +34,9 @@ EXPOSE 5001
 ENV TZ UTC
 
 WORKDIR /app/api
+
+# 中科大 USTC
+RUN sed -i 's@deb.debian.org@mirrors.ustc.edu.cn@g' /etc/apt/sources.list.d/debian.sources
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends curl wget vim nodejs ffmpeg libgmp-dev libmpfr-dev libmpc-dev \

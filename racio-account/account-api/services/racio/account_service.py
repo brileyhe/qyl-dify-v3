@@ -112,6 +112,7 @@ class AccountService:
 
         db.session.add(account)
         db.session.commit()
+        
         return account
 
     @staticmethod

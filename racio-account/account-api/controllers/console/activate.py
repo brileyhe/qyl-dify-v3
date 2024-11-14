@@ -5,11 +5,12 @@ from flask import request
 from flask_restful import Resource, reqparse
 from libs.helper import uuid_value
 from libs.response import response_json, response_json_v2
-from models.racio.account import AccountStatus
+
 from services.racio.account_service import AccountService
 from services.dify.api_service import ApiService
 from services.dify.account_service import AccountService as Dify_AccountService
-from models.racio.account import Account, AccountRole
+
+from models.racio.account import Account, AccountRole, AccountStatus
 from . import api
 
 
@@ -93,8 +94,7 @@ class ActivateApi(Resource):
             return response_json(-1, '无授权信息，请重新登录授权')
 
         # logging.info(access_data)
-        account_integrate = AccountService.get_account_integrate_by_unionid(access_data['provider'],
-                                                                           access_data['unionid'])
+        account_integrate = AccountService.get_account_integrate_by_unionid(access_data['provider'], access_data['unionid'])
 
         if not account_integrate:
             verify_data = AccountService.get_verify_code(args['token'])
@@ -119,6 +119,7 @@ class ActivateApi(Resource):
         if invitation['tenant']:
             tenant = invitation['tenant']
             tenant_name = tenant['name']
+
         apiService = ApiService()
         # 判断被邀请用户是否存在
         account_id = ''
@@ -137,10 +138,12 @@ class ActivateApi(Resource):
                 return response_json(-1, '激活失败，请重新提交激活')
             account_id = account['id']
             apiService.account_update_status(account['id'], AccountStatus.ACTIVE)
-            racio_account = AccountService.create_account(id=account['id'], email=account['email'],
+            racio_account = AccountService.create_account(id=account['id'], 
+                                                          email=account['email'],
                                                           name=access_data['nickname'],
                                                           interface_language=account['interface_language'],
-                                                          phone=args['phone'], status=AccountStatus.ACTIVE)
+                                                          phone=args['phone'], 
+                                                          status=AccountStatus.ACTIVE)
 
             apiService.link_account_integrate(access_data['provider'], access_data['open_id'], account_id)
             AccountService.link_account_integrate(access_data['provider'], access_data['open_id'], access_data['nickname'], access_data['headimgurl'], access_data['unionid'], racio_account)
@@ -172,6 +175,7 @@ class ActivateApi(Resource):
         AccountService.delete_member_invite(args['token'])
         AccountService.update_last_login(racio_account, request)
         token = AccountService.get_account_jwt_token(racio_account)
+
         # 切换用户空间
         Dify_AccountService.switch_tenant(token, tenant_id)
 
@@ -312,7 +316,6 @@ class TenantCreateCheckApi(Resource):
                 is_exists = Dify_AccountService.check_owner_exists(account_id, AccountRole.OWNER)
                 if is_exists:
                     is_tenant_owner = True
-                    is_joined_tenant = True
             else:
                 # 判断该用户是否加入了同一个空间
                 is_exists = Dify_AccountService.check_account_join_exists(tenant_id, account_id)
