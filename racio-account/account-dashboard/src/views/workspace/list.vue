@@ -48,9 +48,9 @@
                             <div>{{ scope.row.status == "active" ? "正常" : "异常" }}</div>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="account_role" label="帐号角色" width="120">
+                    <el-table-column prop="role" label="帐号角色" width="120">
                         <template #default="scope">
-                            <div>{{ scope.row.account_role == "owner" ? "空间所有者" : scope.row.account_role == "admin" ?
+                            <div>{{ scope.row.role == "owner" ? "空间所有者" : scope.row.role == "admin" ?
                                 "空间管理员" : "尊享会员" }}</div>
                         </template>
                     </el-table-column>
@@ -80,7 +80,7 @@
                 <div style="padding: 15px; background-color: #fff;">
 
                     <el-pagination v-model:current-page="PageInfo.page" v-model:page-size="PageInfo.limit" background
-                        :total="PageInfo.total" :page-sizes="[20, 50, 100]"
+                        :total="PageInfo.total" :page-sizes="[10, 20, 50, 100]"
                         layout="total,sizes,prev, pager, next, jumper" @current-change="handleCurrentChange"
                         @size-change="handleSizeChange" />
                 </div>

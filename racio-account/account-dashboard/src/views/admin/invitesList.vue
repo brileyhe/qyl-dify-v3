@@ -28,10 +28,15 @@
                         </template>
                     </el-table-column>
                     <el-table-column prop="remark" label="备注" min-width="90" />
-                    <el-table-column prop="quota" label="限额" min-width="90" />
+                    <el-table-column prop="quota" label="限额" width="90" />
                     <el-table-column prop="created_at" label="创建时间" width="160">
                         <template #default="scope">
                             <div>{{ formatTime(scope.row.created_at, "") }}</div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="expiration" label="有效时间" width="160">
+                        <template #default="scope">
+                            <div>{{ parseTime(scope.row.expiration, "") }}</div>
                         </template>
                     </el-table-column>
                     <!-- <el-table-column prop="last_login_at" label="最后登录时间" width="150">
@@ -53,7 +58,9 @@
             <el-col>
                 <div style="padding: 15px ; background-color: #fff;">
                     <el-pagination v-model:current-page="PageInfo.page" v-model:page-size="PageInfo.limit" background
-                        :total="PageInfo.total" @current-change="handleCurrentChange" />
+                        :total="PageInfo.total" :page-sizes="[10, 20, 50, 100]"
+                        layout="total,sizes,prev, pager, next, jumper" @current-change="handleCurrentChange"
+                        @size-change="handleSizeChange" />
                 </div>
             </el-col>
         </el-row>
@@ -119,7 +126,7 @@ import { useRouter } from "vue-router"
 import { getAuthList, inviteUser, memberInvites } from "@/api/api"
 import MassInvite from "@/components/MassInvite/index.vue"
 import clip from "@/utils/clipboard"
-import { formatTime } from "@/utils"
+import { formatTime, parseTime } from "@/utils"
 import { useUserStore } from "@/store/modules/user"
 const rolesList = ref([
     { key: "admin", value: "空间管理员" },
@@ -139,7 +146,7 @@ const invitUrl = ref("")
 const PageInfo = ref({
     "page": 1,
     "limit": 10,
-    "total": 0
+    "total": 10
 })
 const buttonStatus = ref(false)
 
@@ -147,9 +154,12 @@ const buttonStatus = ref(false)
 const handleCopy = (text, event) => {
     clip(text, event)
 }
-
+function handleSizeChange() {
+    getMemberInvites()
+}
 function handleCurrentChange() {
-    AuthList()
+    // AuthList()
+    getMemberInvites()
 }
 
 function openInvite() {
@@ -163,38 +173,27 @@ function centerDialogVisible() {
     invitText.value = ""
     inviteDialog.value = false
 }
-function AuthList() {
-    getAuthList(PageInfo.value).then(res => {
-        let { code, msg, data } = res.data
 
-        if (code == 0) {
-            tableData.value = data.data
-            PageInfo.value.total = data.total
-            PageInfo.value.page = data.page
-            PageInfo.value.limit = data.limit
-        }
-
-
-    })
-}
 
 function getMemberInvites() {
-    let data = {
-        tenant_id: localStorage.getItem("tenant_id") || ""
-    }
-    memberInvites(data).then(res => {
-        let { code, msg, data } = res.data
-        if (code == 0) {
-            tableData.value = data
-        } else {
 
+    memberInvites(PageInfo.value)
+        .then(res => {
+            let { ...data } = res.data
+            console.log(data, "dddd");
+
+            tableData.value = data.data
+            PageInfo.value.page = data.page
+            PageInfo.value.total = data.total
+            PageInfo.value.limit = data.limit
+        })
+        .catch(error => {
             ElMessage({
-                message: msg,
+                message: "接口异常",
                 type: "error",
                 duration: 3000,
             })
-        }
-    })
+        })
 }
 function sendInvite() {
     inviteUser({
