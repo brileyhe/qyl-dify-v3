@@ -175,7 +175,12 @@ docker/volumes/pgvector/data/*
 docker/volumes/pgvecto_rs/data/*
 docker/volumes/racio/*
 docker/docker-compose-configs/*
+docker/docker-compose-stg-3*.yaml
 
+docker/frp/frpc/data/frpc.toml
+
+docker/nginx/ssl/*.key
+docker/nginx/ssl/*.pem
 docker/nginx/conf.d/default.conf
 docker/middleware.env
 
