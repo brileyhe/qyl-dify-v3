@@ -112,9 +112,9 @@ class MemberInvite(db.Model):
     remark = db.Column(db.String(255), nullable=True, server_default='')
     domain = db.Column(db.String(255), nullable=True, server_default='')
     email = db.Column(db.String(255), nullable=True, server_default='')
-    created_at = db.Column(db.DateTime, nullable=False, server_default=db.text('CURRENT_TIMESTAMP(0)'))
     quota = db.Column(db.Integer, nullable=False, server_default='1')
-    expiration = db.Column(db.DateTime, nullable=False, server_default=db.text("CURRENT_DATE + INTERVAL '3 day'"))
+    created_at = db.Column(db.DateTime, nullable=False, server_default=db.text('CURRENT_TIMESTAMP(0)'))
+    expiration = db.Column(db.DateTime, nullable=False, server_default=db.text("CURRENT_TIMESTAMP + INTERVAL '3 day'"))
 
 # class MemberInviteTest(db.Model):
 #     # __bind_key__ = 'racio_db'
