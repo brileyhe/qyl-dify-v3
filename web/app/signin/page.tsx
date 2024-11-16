@@ -22,7 +22,7 @@ const SignIn = () => {
     else
       authUrl = globalThis.document?.body?.getAttribute('data-public-auth-account') as string
 
-    location.href = authUrl
+    location.href = `${authUrl}?action=authTimeout`
     // getSystemFeatures().then((res) => {
     //   setSystemFeatures(res)
     // }).finally(() => {

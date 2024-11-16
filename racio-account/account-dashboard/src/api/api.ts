@@ -58,9 +58,8 @@ export function editPassword(data) {
 //邀请列表
 export function memberInvites(data) {
     return request({
-        url: "/web/member_invites",
-        method: "post",
-        data,
+        url: `/web/member_invites?page=${data.page}&limit=${data.limit}`,
+        method: "get",
     })
 
 }
@@ -167,8 +166,7 @@ export function checkOpenId(data) {
 }
 export function hasOwnerTenant(data) {
     return request({
-        url: "/console/activate/create_check",
-        method: "post",
-        data,
+        url: `/console/activate/create_check?access_token=${data.access_token}&token=${data.token}`,
+        method: "get",
     })
 }

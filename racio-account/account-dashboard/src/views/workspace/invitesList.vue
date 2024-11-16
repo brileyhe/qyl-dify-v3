@@ -19,10 +19,10 @@
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="remark" label="备注" width="120" />
-                    <el-table-column prop="invited_by" label="邀请人" width="120" />
-                    <el-table-column prop="quota" label="限额" width="120" />
-                    <el-table-column prop="role" label="邀请角色" width="120">
+                    <el-table-column prop="remark" label="备注" min-width="120" />
+                    <el-table-column prop="invited_by" label="邀请人" min-width="100" />
+                    <el-table-column prop="quota" label="限额" min-width="90" />
+                    <el-table-column prop="role" label="邀请角色" min-width="120">
                         <template #default="scope">
                             <div>{{ scope.row.role == "owner" ? "空间所有者" : scope.row.role == "admin" ? "空间管理员" :
                                 "尊享会员"
@@ -30,7 +30,7 @@
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="created_at" label="创建时间" width="120">
+                    <el-table-column prop="created_at" label="创建时间" min-width="120">
                         <template #default="scope">
                             <div>{{ formatTime(scope.row.created_at, "") }}</div>
                         </template>
@@ -143,7 +143,7 @@ const handleCopy = (text, event) => {
 }
 
 function handleCurrentChange() {
-    AuthList()
+    getMemberInvites()
 }
 
 function openInvite() {
@@ -178,22 +178,23 @@ function AuthList() {
 }
 
 function getMemberInvites() {
-    let data = {
-        tenant_id: localStorage.getItem("tenant_id") || ""
-    }
-    memberInvites(data).then(res => {
-        let { code, msg, data } = res.data
-        if (code == 0) {
-            tableData.value = data
-        } else {
+    memberInvites(PageInfo.value)
+        .then(res => {
+            let { ...data } = res.data
+            console.log(data, "dddd");
 
+            tableData.value = data.data
+            PageInfo.value.page
+            PageInfo.value.total
+            PageInfo.value.limit
+        })
+        .catch(error => {
             ElMessage({
-                message: msg,
+                message: "接口异常",
                 type: "error",
                 duration: 3000,
             })
-        }
-    })
+        })
 }
 function sendInvite() {
 
@@ -209,6 +210,7 @@ function sendInvite() {
     inviteUser({
         email: invitText.value,
         domain: "racio.chat",
+        quota: 1,
         role: workspaceRole.value,
         tenant_id: localStorage.getItem("tenant_id") || "",
         remark: remarkText.value

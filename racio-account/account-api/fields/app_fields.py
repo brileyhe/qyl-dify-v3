@@ -46,3 +46,11 @@ member_invites_fields = {
     'quota': fields.Integer,
     'expiration': TimestampField
 }
+
+member_invites_pagination_fields = {
+    'page': fields.Integer,
+    'limit': fields.Integer(attribute='per_page'),
+    'total': fields.Integer,
+    'has_more': fields.Boolean(attribute='has_next'),
+    'data': fields.List(fields.Nested(member_invites_fields), attribute='items')
+}

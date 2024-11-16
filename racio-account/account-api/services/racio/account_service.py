@@ -112,6 +112,7 @@ class AccountService:
 
         db.session.add(account)
         db.session.commit()
+        
         return account
 
     @staticmethod
@@ -347,6 +348,15 @@ class AccountService:
             return member_invite
         else:
             return None
+        
+    @staticmethod
+    def get_member_invite_v2(id: str) -> MemberInvite:
+        member_invite = MemberInvite.query.filter_by(id=id).first()
+        # Do not check quota here
+        if member_invite:
+            return member_invite
+        else:
+            return None
 
     @staticmethod
     def get_member_invites(tenant_id: str = None, account_id: str = None) -> list[MemberInvite]:
@@ -362,7 +372,29 @@ class AccountService:
             member_invites = MemberInvite.query.filter_by(tenant_id=tenant_id, invited_by=account_id).order_by(
                 MemberInvite.created_at.desc()).all()
         return member_invites
+    
+    @staticmethod
+    def get_member_invites_pagination(tenant_id: str = None, account_id: str = None, page: int = 1, limit: int = 20) -> Pagination | None:
+        """
+        Get member_invites list with pagination
+        """
 
+        query = db.select(MemberInvite).where(MemberInvite.tenant_id == tenant_id)
+
+        if account_id != None:
+            query = query.where(MemberInvite.invited_by == account_id)
+            
+        query = query.order_by(MemberInvite.created_at.desc())
+
+        member_invites = db.paginate(
+            query,
+            page=page,
+            per_page=limit,
+            error_out=False
+        )
+
+        return member_invites
+    
     @staticmethod
     def delete_member_invite(id: str) -> None:
         member_invite = MemberInvite.query.filter_by(id=id).first()
@@ -406,13 +438,37 @@ class AccountService:
         if not invitation_data:
             return None
 
+        # get tenant from invitation, if has
         tenant = None
         if invitation_data.tenant_id:
             apiService = ApiService()
             tenant = apiService.get_tenant(invitation_data.tenant_id)
         return {
             'data': invitation_data,
-            'tenant': tenant,
+            'tenant': tenant
+        }
+    
+    @classmethod
+    def get_invitation_if_token_valid_v2(cls, token: str) -> Optional[dict[str, Any]]:
+        invitation_data = cls.get_member_invite_v2(token)
+        if not invitation_data:
+            return None
+
+        # check invitation valid
+        is_valid = False
+        if invitation_data.quota > 0:
+            is_valid = True
+
+        # get tenant from invitation, if has
+        tenant = None
+        if invitation_data.tenant_id:
+            apiService = ApiService()
+            tenant = apiService.get_tenant(invitation_data.tenant_id)
+
+        return {
+            'data': invitation_data,
+            'is_valid': is_valid,
+            'tenant': tenant
         }
 
     @staticmethod
@@ -447,7 +503,9 @@ class AccountService:
     def get_user_data(account_id: str):
         cache_key = f'racio_user_data:{account_id}'
         data = redis_client.get(cache_key)
+
         if not data:
             return None
+        
         json_data = json.loads(data)
         return json_data

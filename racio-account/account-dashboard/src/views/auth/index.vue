@@ -13,8 +13,9 @@
                 <LoginQrcode :token="tokens" :source="source" v-if="platform == 'pc'" />
                 <div style="text-align: center;" v-else>
                     <el-button class="gzh-button" type="success" @click="GotoGZH">立即进入</el-button>
-                    <div class="agreement-tips">授权即同意<a href="https://www.racio.chat/privacy"
-                            target="_blank">隐私政策</a>”和“<a href="https://www.racio.chat/terms" target="_blank">服务条款</a>”
+                    <div class="agreement-tips">授权即同意<a href="https://www.racio.chat/?p=38"
+                            target="_blank">隐私政策</a>”和“<a href="https://www.racio.chat/?page_id=33"
+                            target="_blank">服务条款</a>”
                     </div>
                 </div>
 
@@ -40,7 +41,7 @@ const router = useRouter()
 const platform = ref("")
 const source = ref("index")
 
-const { tokens } = ref(getQueryObject(null))
+const { tokens, action } = getQueryObject(null)
 
 
 
@@ -54,6 +55,20 @@ function isPlatform() {
         platform.value = "pc"
     }
 }
+function checkAuth() {
+    console.log(action, "action");
+    if (action == "authTimeout") {
+        localStorage.clear()
+    } else {
+
+        if (isLogin) {
+            let us = localStorage.userState ? JSON.parse(localStorage.userState) : {}
+            const uri = import.meta.env.VITE_APP_DIFY_URL ? import.meta.env.VITE_APP_DIFY_URL : window.globalVariable.DIFY_URL
+            window.location.href = `${uri}?console_token=${us.token}`
+        }
+    }
+
+}
 
 
 function GotoGZH() {
@@ -65,12 +80,9 @@ function GotoGZH() {
 }
 onMounted(() => {
     isPlatform() // 判断平台
-    let us = localStorage.userState ? JSON.parse(localStorage.userState) : {}
 
-    if (isLogin) {
-        const uri = import.meta.env.VITE_APP_DIFY_URL ? import.meta.env.VITE_APP_DIFY_URL : window.globalVariable.DIFY_URL
-        window.location.href = `${uri}?console_token=${us.token}`
-    }
+    checkAuth()
+
 
 
 

@@ -69,7 +69,7 @@
 import { ref, onMounted } from "vue"
 import Footer from "@/components/Footer/index.vue"
 import { ElMessage, ElMessageBox } from "element-plus"
-import { getWxInfo, sendSms, activate, checkOpenId, checkInvitToken, hasOwnerTenant } from "@/api/api"
+import { getWxInfo, sendSms, activate, checkOpenId, checkInvitToken, hasOwnerTenant, getJwtToken, tenantSwitch } from "@/api/api"
 import { getQueryObject } from "@/utils/index"
 import { useRouter } from "vue-router"
 import { useUserStore } from "@/store/modules/user"
@@ -80,11 +80,16 @@ const verifyPhoneNum = ref("")
 const verifyCode = ref("")
 const openId = ref("")
 const workspace = ref("")
+const workspace_name = ref("")
 const accessToken = ref("")
 const showWorkspace = ref(false)
 const showVerify = ref(false)
 const UserStore = useUserStore()
+const dify_url = ref("")
+const currentRole = ref("normal")
+const urlQuery = getQueryObject(null)
 const { token, code } = getQueryObject(null)
+
 const invitTokenInfo = ref({
     is_valid: "",
     workspace_name: "",
@@ -110,7 +115,6 @@ function isWorkspace() {
 }
 
 function WxInfo() {
-
     getWxInfo({ code: code })
         .then(res => {
             let { code, msg, data } = res.data
@@ -118,7 +122,7 @@ function WxInfo() {
                 accessToken.value = data
                 localStorage.setItem("access_token", data)
                 hasTenant()
-                check(data)
+                // check(data)
             }
 
         })
@@ -135,31 +139,101 @@ function WxInfo() {
 
 
 }
+function goTo(uri) {
+    console.log(uri, "localStorage.DIFY_TOKEN");
+
+    if (uri.indexOf("http") != -1) {
+        window.open(uri, '_blank')
+    } else {
+        router.replace(uri)
+    }
+}
 
 function hasTenant() {
+
     hasOwnerTenant({
         token: token,
         access_token: accessToken.value
     })
         .then((result) => {
-            let { code, msg, data } = result.data
 
-            if (code == 0) {
-                if (data.has_owner_tenant) {
-                    ElMessageBox.alert(`该微信帐号已经创建空间，请更换微信帐号完成绑定操作`, '提示', {
-                        confirmButtonText: '知道了',
-                        dangerouslyUseHTMLString: true,
-                        callback: () => {
-                            router.back()
-                        },
+            let { data } = result.data
+            workspace.value = data.tenant_name
+
+
+            invitTokenInfo.value.role = data.account_role
+            if (data.is_joined_tenant) {
+
+                swtichTenant(data.tenant_id)
+
+                getJwtToken({ "access_token": accessToken.value })
+                    .then(res => {
+                        let { code, data, msg } = res.data
+                        if (code == 0) {
+
+                            if (data.tenant_id == "" && data.current_role != "super_admin") {
+                                ElMessageBox.alert('该Racio尚未找到您的关联帐号，请联系管理员（微信：dukexls）申请试用', '提示', {
+                                    confirmButtonText: '知道了',
+                                })
+                                return
+                            }
+                            let userInfo = {
+                                token: data.token,
+                                access_token: accessToken.value,
+                                roles: [data.current_role],
+                                workspace_name: data.tenant_name,
+                                workspace_id: data.tenant_id,
+                                username: data.name
+                            }
+
+                            workspace.value = data.tenant_name
+                            currentRole.value = data.current_role
+                            UserStore.login(userInfo)
+
+
+                            dify_url.value = import.meta.env.VITE_APP_DIFY_URL ? `${import.meta.env.VITE_APP_DIFY_URL}?console_token=${data.token}` : `${window.globalVariable.DIFY_URL}?console_token=${data.token}`
+                            localStorage.setItem("DIFY_TOKEN", data.token)
+
+                            if (urlQuery.state == "index") {
+
+                                location.href = dify_url.value
+                            } else if (urlQuery.state == "auth") {
+                                router.replace("/workspace")
+                            } else {
+                                ElMessageBox.alert('您已加入该空间，点击【好的】直接进入体验', '提示', {
+                                    // if you want to disable its autofocus
+                                    // autofocus: false,
+                                    confirmButtonText: '好的',
+                                    callback: (action) => {
+                                        goTo(dify_url.value)
+                                    },
+                                })
+                            }
+
+                        }
                     })
-                } else {
-
-                    checkToekn()
-                }
-            } else {
-                checkToekn()
             }
+            else if (data.has_owner_tenant) {
+                ElMessageBox.alert(`该微信帐号已经创建空间，请更换微信帐号完成绑定操作`, '提示', {
+                    confirmButtonText: '知道了',
+                    dangerouslyUseHTMLString: true,
+                    callback: () => {
+                        router.back()
+                    },
+                })
+            } else if (data.is_valid_invitation == false) {
+
+                ElMessageBox.alert(`此邀请链接已经失效，请联系${workspace_name.value == "" ? "管理员（微信：dukexls）" : workspace_name.value + '的[管理员]'}获得新的邀请链接`, '提示', {
+                    confirmButtonText: '知道了',
+                    dangerouslyUseHTMLString: true,
+                    callback: () => {
+                        router.back()
+                    },
+                })
+            } else {
+                check(accessToken.value)
+            }
+
         }).catch((err) => {
             ElMessageBox.alert(`${err}`, '提示', {
                 confirmButtonText: '知道了',
@@ -171,34 +245,7 @@ function hasTenant() {
         });
 }
 
-function checkToekn() {
-
-    checkInvitToken({ token: token })
-        .then(res => {
-            let { code, msg, data } = res.data
-            if (code == 0) {
-
-                if (data.is_valid) {
-
-                    invitTokenInfo.value = data
-                    workspace.value = data.workspace_name
-                    roleTypes.value = data.role
-
-                } else {
-
-                    ElMessageBox.alert(`此邀请链接已经失效，请联系${workspace_name.value == "" ? "管理员（微信：dukexls）" : workspace_name.value + '的[管理员]'}获得新的邀请链接`, '提示', {
-                        confirmButtonText: '知道了',
-                        dangerouslyUseHTMLString: true,
-                        callback: () => {
-                            router.back()
-                        },
-                    })
-                }
-
-            }
-        })
-
-}
+// 检查是否已经绑定微信
 function check(access_token) {
     checkOpenId({
         "access_token": access_token,
@@ -208,6 +255,7 @@ function check(access_token) {
             if (code == 0) {
                 if (data) {
                     showVerify.value = false
+
                 } else {
                     showVerify.value = true
                 }
@@ -271,7 +319,19 @@ function activateAccount() {
                         }
                     })
                 }, 3000);
+            } else if (code != 0 && msg == '不能重复加入同一个空间') {
+                ElMessageBox.alert('您已加入该空间，点击【好的】直接进入体验', '提示', {
+                    confirmButtonText: '好的',
+                    callback: (action) => {
+                        ElMessage({
+                            type: 'info',
+                            message: `action: ${action}`,
+                        })
+                    },
+                })
+
             } else {
+
                 ElMessage({
                     message: msg,
                     type: 'error',
@@ -329,6 +389,16 @@ let checkCodeBtn = ref({
     timer: null
 })
 
+function swtichTenant(tenant_id) {
+    let data = {
+        tenant_id: tenant_id
+    }
+    tenantSwitch(data)
+        .then(res => {
+            let { code, data, msg } = res.data
+
+        })
+}
 
 const getCheckCode = () => {
     if (!phoneStatus.value) {
@@ -351,7 +421,6 @@ const getCheckCode = () => {
 }
 
 onMounted(() => {
-
     WxInfo()
 })
 

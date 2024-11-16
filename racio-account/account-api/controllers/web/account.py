@@ -72,6 +72,57 @@ class AccountListApi(Resource):
 
         return response_json(0, 'success', account_pagination)
 
+    @login_required
+    def get(self):
+        """Get account list"""
+        parser = reqparse.RequestParser()
+        parser.add_argument('page', type=inputs.int_range(1, 99999), required=False, default=1, location='args')
+        parser.add_argument('limit', type=inputs.int_range(1, 100), required=False, default=20, location='args')
+        args = parser.parse_args()
+
+        user_data = AccountService.get_user_data(current_user.id)
+        if user_data['account_role'] != AccountRole.SUPERADMIN:
+            return response_json(-1, '无权访问')
+        
+        # get account list
+        apiService = ApiService()
+        account_pagination = apiService.get_all_account(args['page'], args['limit'])
+        if not account_pagination:
+            data = {'data': [], 'total': 0, 'page': 1, 'limit': 20, 'has_more': False}
+            return response_json(0, 'success', data)
+
+        for account in account_pagination['data']:
+            phone = ''
+            status = ''
+            last_login_at = ''
+            last_login_ip = ''
+            racio_account = AccountService.get_account(account['id'])
+            if racio_account:
+                phone = racio_account.phone
+                status = racio_account.status
+                last_login_at = int(racio_account.last_login_at.timestamp())
+                last_login_ip = racio_account.last_login_ip
+            tenants = apiService.get_all_tenant(account['id'])
+            tenant_names = []
+            if tenants:
+                for tenant in tenants:
+                    tenant_names.append(tenant['name'])
+            nickname = ''
+            headimgurl = ''
+            account_integrate = AccountService.get_account_integrate_by_account_id(provider='wx', account_id=account['id'])
+            if account_integrate:
+                nickname = account_integrate.nickname
+                headimgurl = account_integrate.headimgurl
+
+            account['tenant_names'] = tenant_names
+            account['phone'] = phone
+            account['status'] = status
+            account['nickname'] = nickname
+            account['headimgurl'] = headimgurl
+            account['last_login_at'] = last_login_at
+            account['last_login_ip'] = last_login_ip
+
+        return response_json(0, 'success', account_pagination)
 
 # class AccountInviteEmailApi(Resource):
 #     """Invite a new member by email."""

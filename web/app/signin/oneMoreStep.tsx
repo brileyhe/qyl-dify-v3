@@ -1,7 +1,6 @@
 'use client'
 import React, { useEffect, useReducer } from 'react'
 import { useTranslation } from 'react-i18next'
-import Link from 'next/link'
 import useSWR from 'swr'
 import { useRouter } from 'next/navigation'
 // import { useContext } from 'use-context-selector'

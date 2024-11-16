@@ -94,7 +94,7 @@
                 <div style="padding: 15px; background-color: #fff;">
 
                     <el-pagination v-model:current-page="PageInfo.page" v-model:page-size="PageInfo.limit" background
-                        :total="PageInfo.total" :page-sizes="[20, 50, 100]"
+                        :total="PageInfo.total" :page-sizes="[10, 20, 50, 100]"
                         layout="total,sizes,prev, pager, next, jumper" @current-change="handleCurrentChange"
                         @size-change="handleSizeChange" />
                 </div>
@@ -338,6 +338,7 @@ function sendInvite() {
     inviteUser({
         email: invitText.value,
         domain: "racio.chat",
+        quota: 1,
         role: workspaceRole.value,
         tenant_id: localStorage.getItem("tenant_id") || "",
         remark: remarkText.value

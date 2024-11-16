@@ -81,7 +81,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-vue": "^9.3.0",
     "fast-glob": "^3.2.11",
-    "husky": "^7.0.4",
+    "husky": "^8.0.3",
     "lint-staged": "^12.3.4",
     "mrm": "^3.0.10",
     "prettier": "^2.7.1",
