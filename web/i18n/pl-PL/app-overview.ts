@@ -37,6 +37,7 @@ const translation = {
       accessibleAddress: 'Publiczny adres URL',
       preview: 'Podgląd',
       regenerate: 'Wygeneruj ponownie',
+      regenerateNotice: 'Czy chcesz wygenerować ponownie publiczny adres URL?',
       preUseReminder: 'Przed kontynuowaniem włącz aplikację WebApp.',
       settings: {
         entry: 'Ustawienia',
@@ -47,6 +48,17 @@ const translation = {
           'Ten tekst będzie wyświetlany po stronie klienta, zapewniając podstawowe wskazówki, jak korzystać z aplikacji',
         webDescPlaceholder: 'Wpisz opis WebApp',
         language: 'Język',
+        workflow: {
+          title: 'Kroki przepływu pracy',
+          show: 'Pokaż',
+          hide: 'Ukryj',
+          subTitle: 'Szczegóły przepływu pracy',
+          showDesc: 'Pokazywanie lub ukrywanie szczegółów przepływu pracy w aplikacji internetowej',
+        },
+        chatColorTheme: 'Motyw kolorystyczny czatu',
+        chatColorThemeDesc: 'Ustaw motyw kolorystyczny czatu',
+        chatColorThemeInverted: 'Odwrócony',
+        invalidHexMessage: 'Nieprawidłowa wartość heksadecymalna',
         more: {
           entry: 'Pokaż więcej ustawień',
           copyright: 'Prawa autorskie',
@@ -55,6 +67,15 @@ const translation = {
           privacyPolicyPlaceholder: 'Wprowadź link do polityki prywatności',
           privacyPolicyTip:
             'Pomaga odwiedzającym zrozumieć, jakie dane zbiera aplikacja, zobacz <privacyPolicyLink>Politykę prywatności Dify</privacyPolicyLink>.',
+          customDisclaimer: 'Oświadczenie o ochronie danych',
+          customDisclaimerPlaceholder: 'Wprowadź oświadczenie o ochronie danych',
+          customDisclaimerTip: 'Niestandardowy tekst oświadczenia będzie wyświetlany po stronie klienta, dostarczając dodatkowych informacji o aplikacji.',
+        },
+        sso: {
+          tooltip: 'Skontaktuj się z administratorem, aby włączyć logowanie jednokrotne w aplikacji internetowej',
+          title: 'Logowanie jednokrotne w aplikacji internetowej',
+          label: 'Uwierzytelnianie logowania jednokrotnego',
+          description: 'Wszyscy użytkownicy muszą zalogować się za pomocą logowania jednokrotnego przed użyciem aplikacji internetowej',
         },
       },
       embedded: {
@@ -117,8 +138,11 @@ const translation = {
     tokenPS: 'Tokeny/s',
     totalMessages: {
       title: 'Łączna liczba wiadomości',
-      explanation:
-        'Dzienna liczba interakcji z AI; inżynieria i debugowanie monitów wykluczone.',
+      explanation: 'Liczba dziennych interakcji z AI.',
+    },
+    totalConversations: {
+      title: 'Całkowita liczba rozmów',
+      explanation: 'Liczba dziennych rozmów z AI; inżynieria/debugowanie promptów wykluczone.',
     },
     activeUsers: {
       title: 'Aktywni użytkownicy',

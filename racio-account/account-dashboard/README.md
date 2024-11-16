@@ -2,21 +2,26 @@
 
 docker-compose上的环境变量
 
-APPID: ''  #微信网站扫描应用appid
-GZHAPPID: ''  #微信公众号appid
-BASE_API: '' # account-api 访问地址         #http://at-stg.racio.chat/api
-WEBSITE: ' ' # account-dashboard 访问地址   #http://at-stg.racio.chat/dashboard
-DIFY_URL: ' '  # dify平台访问地址            #http://dify.corp.chaolian360.com
+APPID: ''       #微信网站扫描应用appid
+GZHAPPID: ''    #微信公众号appid
+BASE_API: ''    # account-api       访问地址   #<http://at-stg.racio.chat/api>
+WEBSITE: ''     # account-dashboard 访问地址   #<http://at-stg.racio.chat/dashboard>
+DIFY_URL: ''    # Dify平台           访问地址  #<http://dify.corp.chaolian360.com>
 
+## debug
 
+yarn dev
 
+## build
 
+yarn build and depands on nginx
 
 参考
-```
-docker build -f ./Dockerfile -t 镜像路径/镜像名称 .
-```
 
+```bash
+cd racio-account/account-dashboard
+docker buildx build -t racio-account-dashboard-amd64:latest --platform=linux/amd64/v3 -o type=docker .
+```
 
 ``` dify-nginx 容器 的default.conf 需要参考下面的config 去增加 dashboard的访问路径
 location ^~ /account/ {

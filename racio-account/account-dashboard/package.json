@@ -1,17 +1,20 @@
 {
-  "name": "racio",
+  "name": "racio-account",
+  "version": "0.1.0",  
   "private": true,
-  "version": "0.0.0",
+  "engines": {
+    "node": ">=18.17.0"
+  },
   "scripts": {
     "dev": "vite",
     "build:dev": "vite build --mode development",
     "build:test": "vite build --mode test",
     "build:prod": "vite build --mode production",
-    "commit": "git add -A && czg && git push",
+    "build:ts": "vue-tsc --noEmit --skipLibCheck && vite build",
     "build": "vite build",
     "preview": "vite preview",
+    "commit": "git add -A && czg && git push",
     "serve": "vite",
-    "build:ts": "vue-tsc --noEmit --skipLibCheck && vite build",
     "lint": "eslint . --ext .vue,.js,.ts,.jsx,.tsx",
     "lint:fix": "eslint . --ext .vue,.js,.ts,.jsx,.tsx --fix",
     "lint:prettier": "prettier --write  \"src/**/*.{js,json,tsx,css,less,scss,vue,html,md}\"",

@@ -1,6 +1,5 @@
+# base image
 FROM node:20.18-alpine3.19  AS base
-
-
 
 WORKDIR /app/web/
 COPY . .
@@ -8,7 +7,6 @@ RUN rm -rf .yarn
 RUN rm -rf node_modules
 
 RUN yarn config set registry https://registry.npmmirror.com
-
 
 RUN yarn install
 RUN yarn build
@@ -26,7 +24,6 @@ RUN rm /etc/nginx/conf.d/default.conf
 
 COPY --from=base /app/web/docker/default.conf /etc/nginx/conf.d/
 COPY --from=base /app/web/docker/entrypoint.sh ./entrypoint.sh
-
 
 EXPOSE 3001
 ENTRYPOINT ["/bin/sh", "./entrypoint.sh"]

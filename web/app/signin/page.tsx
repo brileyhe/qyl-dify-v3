@@ -1,11 +1,11 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import cn from 'classnames'
 import Loading from '../components/base/loading'
 import Forms from './forms'
 import Header from './_header'
 import style from './page.module.css'
 import UserSSOForm from './userSSOForm'
+import cn from '@/utils/classnames'
 
 import type { SystemFeatures } from '@/types/feature'
 import { defaultSystemFeatures } from '@/types/feature'

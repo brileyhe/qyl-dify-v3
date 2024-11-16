@@ -1,4 +1,3 @@
-
 from flask_sqlalchemy.pagination import Pagination
 
 from extensions.ext_database import db
@@ -14,14 +13,10 @@ class InstalledAppService:
         :param args: request args
         :return:
         """
-        filters = [
-            InstalledApp.tenant_id == tenant_id
-        ]
+        filters = [InstalledApp.tenant_id == tenant_id]
 
-        if 'tag_ids' in args and args['tag_ids']:
-            target_ids = TagService.get_target_ids_by_tag_ids('app',
-                                                              tenant_id,
-                                                              args['tag_ids'])
+        if args.get("tag_ids"):
+            target_ids = TagService.get_target_ids_by_tag_ids("app", tenant_id, args["tag_ids"])
             if target_ids:
                 filters.append(InstalledApp.app_id.in_(target_ids))
             else:
@@ -29,11 +24,9 @@ class InstalledAppService:
 
         installed_app_models = db.paginate(
             db.select(InstalledApp).where(*filters).order_by(InstalledApp.last_used_at.desc()),
-            page=args['page'],
-            per_page=args['limit'],
-            error_out=False
+            page=args["page"],
+            per_page=args["limit"],
+            error_out=False,
         )
 
         return installed_app_models
-
-

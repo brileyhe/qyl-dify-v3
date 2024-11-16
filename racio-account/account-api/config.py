@@ -27,8 +27,6 @@ DEFAULTS = {
     'LOG_LEVEL': 'INFO',
     'LOG_FORMAT': '%(asctime)s.%(msecs)03d %(levelname)s [%(threadName)s] [%(filename)s:%(lineno)d] - %(message)s',
     'LOG_DATEFORMAT': '%Y-%m-%d %H:%M:%S',
-    # 'WX_CLIENT_ID': '',
-    # 'WX_CLIENT_SECRET': '',
     # 'INVITE_EXPIRY_HOURS': 72,
 
     # 'CONSOLE_API_URL': '',
@@ -172,11 +170,14 @@ class Config:
         self.TENCENT_SMS_TEMPLATE_ID = get_env('TENCENT_SMS_TEMPLATE_ID')
         self.TENCENT_SMS_SIGNNAME = get_env('TENCENT_SMS_SIGNNAME')
         self.TENCENT_SMS_TIMEOUT = get_env('TENCENT_SMS_TIMEOUT')
-        self.CONSOLE_API_URL = get_env('CONSOLE_API_URL')
 
+        # Cloud OAuth2 configurations
+        self.WECHAT_CLIENT_ID = get_env('WECHAT_CLIENT_ID')
+        self.WECHAT_CLIENT_SECRET = get_env('WECHAT_CLIENT_SECRET')
 
-        self.WX_CLIENT_ID = get_env('WX_CLIENT_ID')
-        self.WX_CLIENT_SECRET = get_env('WX_CLIENT_SECRET')
+        # WeChat OAuth - # WeChat Mini Program OAuth
+        self.WECHAT_APP_ID = get_env('WECHAT_APP_ID')
+        self.WECHAT_APP_SECRET = get_env('WECHAT_APP_SECRET')
 
         self.DIFY_INNER_API_KEY = get_env('DIFY_INNER_API_KEY')
         self.DIFY_ADMIN_API_KEY = get_env('DIFY_ADMIN_API_KEY')
@@ -184,5 +185,7 @@ class Config:
 
         self.INIT_PASSWORD = get_env('INIT_PASSWORD')
 
-        self.WECHAT_APP_ID = get_env('WECHAT_APP_ID')
-        self.WECHAT_APP_SECRET = get_env('WECHAT_APP_SECRET')
+        self.CONSOLE_API_URL = get_env('CONSOLE_API_URL')
+
+
+

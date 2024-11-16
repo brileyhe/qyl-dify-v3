@@ -1,7 +1,7 @@
 'use client'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect } from 'react'
 import Link from 'next/link'
-import { useBoolean, useClickAway } from 'ahooks'
+import { useBoolean } from 'ahooks'
 import { useSelectedLayoutSegment } from 'next/navigation'
 import { Bars3Icon } from '@heroicons/react/20/solid'
 import HeaderBillingBtn from '../billing/header-billing-btn'
@@ -13,13 +13,13 @@ import Rtraining from './racio-training-nav'
 // import ExploreNav from './explore-nav'
 import Roffice from './racio-office-nav'
 import ToolsNav from './tools-nav'
-import GithubStar from './github-star'
 import { WorkspaceProvider } from '@/context/workspace-context'
 import { useAppContext } from '@/context/app-context'
 import LogoSite from '@/app/components/base/logo/logo-site'
-import PlanComp from '@/app/components/billing/plan'
 import useBreakpoints, { MediaType } from '@/hooks/use-breakpoints'
 import { useProviderContext } from '@/context/provider-context'
+import { useModalContext } from '@/context/modal-context'
+
 const navClassName = `
   flex items-center relative mr-0 sm:mr-3 px-3 h-8 rounded-xl
   font-medium text-sm
@@ -27,99 +27,92 @@ const navClassName = `
 `
 
 const Header = () => {
-  const { currentWorkspace, isCurrentWorkspaceManager, langeniusVersionInfo } = useAppContext()
-  const [showUpgradePanel, setShowUpgradePanel] = useState(false)
-  const upgradeBtnRef = useRef<HTMLElement>(null)
-  useClickAway(() => {
-    setShowUpgradePanel(false)
-  }, upgradeBtnRef)
+  const { isCurrentWorkspaceEditor, isCurrentWorkspaceDatasetOperator, currentWorkspace } = useAppContext()
 
   const selectedSegment = useSelectedLayoutSegment()
   const media = useBreakpoints()
   const isMobile = media === MediaType.mobile
   const [isShowNavMenu, { toggle, setFalse: hideNavMenu }] = useBoolean(false)
-  const { enableBilling } = useProviderContext()
+  const { enableBilling, plan } = useProviderContext()
+  const { setShowPricingModal, setShowAccountSettingModal } = useModalContext()
+  const isFreePlan = plan.type === 'sandbox'
+  const handlePlanClick = useCallback(() => {
+    if (isFreePlan)
+      setShowPricingModal()
+    else
+      setShowAccountSettingModal({ payload: 'billing' })
+  }, [isFreePlan, setShowAccountSettingModal, setShowPricingModal])
 
   useEffect(() => {
     hideNavMenu()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedSegment])
   return (
-    <>
-      <div className='flex flex-1 items-center justify-between px-4'>
+    <div className='flex flex-1 items-center justify-between px-4'>
+      <div className='flex items-center'>
+        {isMobile && currentWorkspace.role !== 'normal' && <div
+          className='flex items-center justify-center h-8 w-8 cursor-pointer'
+          onClick={toggle}
+        >
+          <Bars3Icon className="h-4 w-4 text-gray-500" />
+        </div>}
+        {!isMobile && <>
+          <Link href="/office" className='flex items-center mr-4'>
+            <LogoSite className='object-contain' />
+          </Link>
+          {/* <GithubStar /> */}
+        </>}
+      </div>
+      {isMobile && (
+        <div className='flex'>
+          <Link href="/office" className='flex items-center mr-4'>
+            <LogoSite />
+          </Link>
+          {/* <GithubStar /> */}
+        </div>
+      )}
+      {!isMobile && (
+        // <div className='flex items-center'>
+        //   {!isCurrentWorkspaceDatasetOperator && <ExploreNav className={navClassName} />}
+        //   {!isCurrentWorkspaceDatasetOperator && <AppNav />}
+        //   {(isCurrentWorkspaceEditor || isCurrentWorkspaceDatasetOperator) && <DatasetNav />}
+        //   {!isCurrentWorkspaceDatasetOperator && <ToolsNav className={navClassName} />}
+        // </div>
         <div className='flex items-center'>
-          {isMobile && currentWorkspace.role !== 'normal' && <div
-            className='flex items-center justify-center h-8 w-8 cursor-pointer'
-            onClick={toggle}
-          >
-            <Bars3Icon className="h-4 w-4 text-gray-500" />
-          </div>}
-          {!isMobile && <>
-            <Link href="/office" className='flex items-center mr-4'>
-              <LogoSite className='object-contain' />
-            </Link>
-            <GithubStar />
-          </>}
+          <Roffice className={navClassName} />
+          {(currentWorkspace.role !== 'normal') && <Rtraining />}
+          {(isCurrentWorkspaceEditor || isCurrentWorkspaceDatasetOperator) && <DatasetNav />}
+          {(currentWorkspace.role !== 'normal') && <ToolsNav className={navClassName} />}
         </div>
-        {isMobile && (
-          <div className='flex'>
-            <Link href="/office" className='flex items-center mr-4'>
-              <LogoSite />
-            </Link>
-            <GithubStar />
+      )}
+      <div className='flex items-center flex-shrink-0'>
+        <EnvNav />
+        {enableBilling && (
+          <div className='mr-3 select-none'>
+            <HeaderBillingBtn onClick={handlePlanClick} />
           </div>
         )}
-        {!isMobile && (
-          // <div className='flex items-center'>
-          //   <ExploreNav className={navClassName} />
-          //   <AppNav />
-          //   {isCurrentWorkspaceManager && <DatasetNav />}
-          //   <ToolsNav className={navClassName} />
-          // </div>
-          <div className='flex items-center'>
-            <Roffice className={navClassName} />
-            {(currentWorkspace.role !== 'normal') && <Rtraining />}
-            {isCurrentWorkspaceManager && <DatasetNav />}
-            {(currentWorkspace.role !== 'normal') && <ToolsNav className={navClassName} />}
-          </div>
-        )}
-        <div className='flex items-center flex-shrink-0'>
-          <EnvNav />
-          {enableBilling && (
-            <div className='mr-3 select-none'>
-              <HeaderBillingBtn onClick={() => setShowUpgradePanel(true)} />
-              {showUpgradePanel && (
-                <div
-                  ref={upgradeBtnRef as any}
-                  className='fixed z-10 top-12 right-1 w-[360px]'
-                >
-                  <PlanComp loc='header' />
-                </div>
-              )}
-            </div>
-          )}
-          <WorkspaceProvider>
-            <AccountDropdown isMobile={isMobile} />
-          </WorkspaceProvider>
-        </div>
+        <WorkspaceProvider>
+          <AccountDropdown isMobile={isMobile} />
+        </WorkspaceProvider>
       </div>
       {(isMobile && isShowNavMenu) && (
         // <div className='w-full flex flex-col p-2 gap-y-1'>
-        //   <ExploreNav className={navClassName} />
-        //   <AppNav />
-        //   {isCurrentWorkspaceManager && <DatasetNav />}
-        //   <ToolsNav className={navClassName} />
+        //   {!isCurrentWorkspaceDatasetOperator && <ExploreNav className={navClassName} />}
+        //   {!isCurrentWorkspaceDatasetOperator && <AppNav />}
+        //   {(isCurrentWorkspaceEditor || isCurrentWorkspaceDatasetOperator) && <DatasetNav />}
+        //   {!isCurrentWorkspaceDatasetOperator && <ToolsNav className={navClassName} />}
         // </div>
         <div className='pt-30'>
           <div className='w-full flex flex-row place-content-center pt-1 pb-2'>
             <Roffice className={navClassName} />
             <Rtraining />
-            {isCurrentWorkspaceManager && <DatasetNav />}
-            <ToolsNav className={navClassName} />
+            {(isCurrentWorkspaceEditor || isCurrentWorkspaceDatasetOperator) && <DatasetNav />}
+            {!isCurrentWorkspaceDatasetOperator && <ToolsNav className={navClassName} />}
           </div>
         </div>
       )}
-    </>
+    </div>
   )
 }
 export default Header
