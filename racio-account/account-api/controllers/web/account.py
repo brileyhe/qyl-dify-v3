@@ -48,8 +48,16 @@ class AccountListApi(Resource):
             if racio_account:
                 phone = racio_account.phone
                 status = racio_account.status
-                last_login_at = int(racio_account.last_login_at.timestamp())
-                last_login_ip = racio_account.last_login_ip
+                # last_login_at = racio_account.last_login_at
+                if racio_account.last_login_at is not None:
+                    last_login_at = int(racio_account.last_login_at.timestamp())
+                else:
+                    last_login_at = None 
+                # last_login_ip = racio_account.last_login_ip    
+                if racio_account.last_login_ip is not None:
+                    last_login_ip = racio_account.last_login_ip
+                else:
+                    last_login_ip = None
             tenants = apiService.get_all_tenant(account['id'])
             tenant_names = []
             if tenants:
