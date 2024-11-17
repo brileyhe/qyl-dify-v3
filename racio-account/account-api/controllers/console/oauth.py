@@ -11,10 +11,16 @@ from . import api
 def get_oauth_providers():
     with current_app.app_context():
 
+        logging.info(f'CONSOLE_API_URL: {current_app.config.get("CONSOLE_API_URL")}')
+        logging.info(f'WECHAT_CLIENT_ID: {current_app.config.get("WECHAT_CLIENT_ID")}')
+        logging.info(f'WECHAT_CLIENT_SECRET: {current_app.config.get("WECHAT_CLIENT_SECRET")}')
         wx_oauth = WxOAuth(client_id=current_app.config.get('WECHAT_CLIENT_ID'),
                            client_secret=current_app.config.get('WECHAT_CLIENT_SECRET'),
                            redirect_uri=current_app.config.get('CONSOLE_API_URL') + '/console/api/oauth/authorize/wx')
-
+        
+        logging.info(f'CONSOLE_WEB_URL: {current_app.config.get("CONSOLE_WEB_URL")}')
+        logging.info(f'WECHAT_APP_ID: {current_app.config.get("WECHAT_APP_ID")}')
+        logging.info(f'WECHAT_APP_SECRET: {current_app.config.get("WECHAT_APP_SECRET")}')
         wechat_oauth = WeChatOAuth(client_id=current_app.config.get('WECHAT_APP_ID'),
                            client_secret=current_app.config.get('WECHAT_APP_SECRET'),
                            redirect_uri=current_app.config.get('CONSOLE_WEB_URL') + '/dashboard/#/auth/gzhcheck')
