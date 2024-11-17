@@ -8,3 +8,11 @@ proxy_set_header Connection "";
 proxy_buffering off;
 proxy_read_timeout ${NGINX_PROXY_READ_TIMEOUT};
 proxy_send_timeout ${NGINX_PROXY_SEND_TIMEOUT};
+
+#proxy_set_header X-Real-IP $remote_addr;
+#proxy_set_header REMOTE-HOST $remote_addr;
+#proxy_set_header Upgrade $http_upgrade;
+#proxy_set_header Connection "upgrade";
+
+#add_header X-Cache $upstream_cache_status;
+#add_header Cache-Control no-cache;

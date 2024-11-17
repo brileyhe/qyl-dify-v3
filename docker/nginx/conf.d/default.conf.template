@@ -29,6 +29,30 @@ server {
       include proxy.conf;
     }
 
+    location ^~ /account/api/ {
+      proxy_pass http://racio-account-api:5003/;
+      include proxy.conf;
+    }
+
+    location ^~ /account/ {
+      proxy_pass http://racio-account-dashboard:3001/;  #这个换成容器内网络地址和端口 举例子：http://account-dashboard:80  http://容器名:容器内部端口号 ！！！注意！！！ dify-nginx 跟account-dashboard 必须是同一个虚拟网络。
+      include proxy.conf;
+    }
+
+    location /MP_verify_pnzczGGxuiPqjLC8.txt {
+        alias /etc/nginx/verify.d/MP_verify_pnzczGGxuiPqjLC8.txt;  # 设置文件的路径
+        types {
+            application/octet-stream;
+        }
+    }
+
+    location /MP_verify_XDkMw0FVn5NvkNhb.txt {
+        alias /etc/nginx/verify.d/MP_verify_XDkMw0FVn5NvkNhb.txt;  # 设置文件的路径
+        types {
+            application/octet-stream;
+        }
+    }
+
     # placeholder for acme challenge location
     ${ACME_CHALLENGE_LOCATION}
 

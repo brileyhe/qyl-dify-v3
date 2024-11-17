@@ -173,6 +173,9 @@ class ApiService:
             "name": name,
             "email": email
         }
+
+        logging.info(f'-racio-account.account-api.services.dify.api-service:create_account - {self.DIFY_API_URL}')
+
         response = requests.post(self.DIFY_API_URL + "/console/api/accounts", json=json_data,
                                  headers=self.admin_request_headers)
         if response.status_code == 201:
