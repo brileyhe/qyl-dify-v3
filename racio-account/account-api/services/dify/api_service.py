@@ -308,6 +308,9 @@ class ApiService:
         json_data = {
             'tenant_id': tenant_id
         }
+        # @setup_required in Dify
+        # @login_required in Dify
+        # @account_initialization_required in Dify
         response = requests.post(self.DIFY_API_URL + "/console/api/workspaces/switch", json=json_data,
                                  headers=self.user_request_headers)
         if response.status_code == 200:
@@ -620,6 +623,9 @@ class ApiService:
     '''
 
     def get_current_tenant(self):
+        # @setup_required in Dify
+        # @login_required in Dify
+        # @account_initialization_required in Dify
         response = requests.get(self.DIFY_API_URL + "/console/api/workspaces/current",
                                 headers=self.user_request_headers)
         if response.status_code == 200:
